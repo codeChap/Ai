@@ -7,9 +7,11 @@ namespace Codechap\Aiwrapper;
 use Codechap\Aiwrapper\Services\OpenAiService;
 use Codechap\Aiwrapper\Services\AnthropicService;
 use Codechap\Aiwrapper\Services\XaiService;
+use Codechap\Aiwrapper\Services\GroqService;
+use Codechap\Aiwrapper\Interfaces\AIServiceInterface;
 
 class AIWrapper {
-    private $service;
+    private AIServiceInterface $service;
     private static $serviceRegistry = [];
 
     public function __construct(
@@ -59,7 +61,18 @@ class AIWrapper {
     /**
      * Query the AI service
      */
-    public function query(string $prompt): string {
+    public function query(string|array $prompt): Curl {
         return $this->service->query($prompt);
+    }
+
+    public function get(string $name)
+    {
+        return $this->service->get($name);
+    }
+
+    public function set(string $name, $value): self
+    {
+        $this->service->set($name, $value);
+        return $this;
     }
 }

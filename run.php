@@ -2,25 +2,23 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use Codechap\Aiwrapper\Services\XaiService;
+use Codechap\Aiwrapper\AIWrapper;
 
-$apiKey = file_get_contents( realpath(__DIR__ . '/..') . '/X-API-KEY.txt');
+$apiKey = file_get_contents(realpath(__DIR__ . '/..') . '/X-API-KEY.txt');
 
-$xai = new XaiService($apiKey);
+// Create an instance of AIWrapper
+$ai = new AIWrapper('xai', $apiKey);
 
-// Define your system prompt
-$systemPrompt = "You are a helpful AI assistant that provides clear, concise, and accurate responses.";
+// Configure parameters and send query
+$response = $ai
+    ->set('temperature', 0)
+    ->set('model', 'grok-2-latest')
+    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+    ->set('stream', false)
+    ->query("What is the capital of South Africa?")
+    ->all()
+    ;
 
-// Your user prompt
-$userPrompt = "What is the capital of South Africa?";
-
-
-    $response = $xai->query(
-        $userPrompt,
-        $systemPrompt,    // System message
-        'grok-2-latest',  // Model
-        0              // Temperature
-    );
-    echo $response . "\n";
+print_r($response);
 
 ?>

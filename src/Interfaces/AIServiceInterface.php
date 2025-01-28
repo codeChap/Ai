@@ -2,7 +2,9 @@
 
 namespace Codechap\Aiwrapper\Interfaces;
 
+use Codechap\Aiwrapper\Curl;
+
 interface AIServiceInterface
 {
-    public function query(string $prompt, ?string $systemMessage = null): string;
-} 
+    public function query(string|array $prompts): Curl;
+}

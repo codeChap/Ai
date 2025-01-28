@@ -4,14 +4,16 @@ namespace Codechap\Aiwrapper\Traits;
 
 trait AIServiceTrait
 {
-    protected function formatMessages(string|array $prompt, ?string $systemMessage = null): array
+    protected function formatMessages(string|array $prompt, string|bool $systemMessage = false): array
     {
-        $messages = [
-            [
+        $messages = [];
+
+        if($systemMessage) {
+            $messages[] = [
                 'role' => 'system',
-                'content' => $systemMessage ?? 'You are a test assistant.'
-            ]
-        ];
+                'content' => $systemMessage
+            ];
+        }
 
         // If prompt is a string, treat it as a single user message
         if (is_string($prompt)) {
@@ -24,14 +26,15 @@ trait AIServiceTrait
 
         // If prompt is an array, append all messages
         foreach ($prompt as $message) {
-            if (is_string($message)) {
-                $messages[] = [
-                    'role' => 'user',
-                    'content' => $message
-                ];
-            } elseif (is_array($message) && isset($message['role'], $message['content'])) {
-                $messages[] = $message;
+
+            if(!isset($message['role']) || !isset($message['content'])) {
+                throw new \Exception("Invalid message format: 'role' and 'content' are required.");
             }
+
+            $messages[] = [
+                'role' => $message['role'],
+                'content' => $message['content']
+            ];
         }
 
         return $messages;
