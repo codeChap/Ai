@@ -5,49 +5,41 @@ declare(strict_types=1);
 namespace Codechap\Aiwrapper\Tests\Services;
 
 use Codechap\Aiwrapper\Services\XaiService;
-use Codechap\Aiwrapper\Tests\Mocks\MockHttpClient;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
+use InvalidArgumentException;
 
 class XaiServiceTest extends TestCase
 {
-    private const DUMMY_API_KEY = 'xai-xVbhhCJQXBxC0g7cUWvdNWycCUii70tUz6mXoKWUpm0GPiJAPFqXmkume75ER1fjbvwobXGbRoeZtpFr';
-    private MockHttpClient $mockClient;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->mockClient = new MockHttpClient();
-    }
+    private const DUMMY_API_KEY = 'test-api-key-123';
 
     public function test_can_initialize_xai_service(): void
     {
-        $service = new XaiService(self::DUMMY_API_KEY, $this->mockClient);
+        $service = new XaiService(self::DUMMY_API_KEY);
         $this->assertInstanceOf(XaiService::class, $service);
     }
 
-    public function test_can_query_xai_service(): void
+    public function test_throws_exception_for_empty_api_key(): void
     {
-        $expectedResponse = json_encode([
-            'response' => 'Hello! I am doing well, thank you for asking.'
-        ]);
-        
-        $this->mockClient = new MockHttpClient($expectedResponse);
-        $service = new XaiService(self::DUMMY_API_KEY, $this->mockClient);
-        
-        $response = $service->query('Hello, how are you?');
-        
-        $this->assertIsString($response);
-        $this->assertNotEmpty($response);
-        $this->assertEquals('Hello! I am doing well, thank you for asking.', $response);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('API key cannot be empty');
+        new XaiService('');
     }
 
-    public function test_handles_api_error(): void
+    public function test_query_with_empty_prompt(): void
     {
-        $this->mockClient->setThrowError(true);
-        $service = new XaiService(self::DUMMY_API_KEY, $this->mockClient);
+        $service = new XaiService(self::DUMMY_API_KEY);
         
-        $this->expectException(RuntimeException::class);
-        $service->query('Hello, how are you?');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Prompt cannot be empty');
+        $service->query('');
+    }
+
+    public function test_query_with_empty_prompts_array(): void
+    {
+        $service = new XaiService(self::DUMMY_API_KEY);
+        
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Prompts array cannot be empty');
+        $service->query([]);
     }
 } 

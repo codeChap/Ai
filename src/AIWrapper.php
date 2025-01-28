@@ -18,6 +18,14 @@ class AIWrapper {
         private readonly string $serviceType,
         private readonly string $apiKey,
     ) {
+        if (empty(trim($serviceType))) {
+            throw new \InvalidArgumentException("Service name cannot be empty");
+        }
+
+        if (empty(trim($apiKey))) {
+            throw new \InvalidArgumentException("API key cannot be empty");
+        }
+
         $this->loadServices();
         
         if (!isset(self::$serviceRegistry[$serviceType])) {
@@ -26,7 +34,7 @@ class AIWrapper {
             if (class_exists($serviceClass)) {
                 self::registerService($serviceType, $serviceClass);
             } else {
-                throw new \InvalidArgumentException("Invalid service type: {$serviceType}");
+                throw new \InvalidArgumentException("Service {$serviceType} not found");
             }
         }
 
@@ -63,6 +71,11 @@ class AIWrapper {
      */
     public function query(string|array $prompt): Curl {
         return $this->service->query($prompt);
+    }
+
+    public function content(): string
+    {
+        return $this->service->content();
     }
 
     public function get(string $name)

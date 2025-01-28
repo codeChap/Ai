@@ -39,6 +39,10 @@ class XaiService implements AIServiceInterface
     
     public function __construct(string $apiKey, string $url = 'https://api.x.ai/v1/')
     {
+        if (empty(trim($apiKey))) {
+            throw new \InvalidArgumentException("API key cannot be empty");
+        }
+        
         $this->apiKey = $apiKey;
         $this->baseUrl = $url;
     }
@@ -62,6 +66,13 @@ class XaiService implements AIServiceInterface
     
     public function query(string|array $prompts): Curl
     {
+        if (is_string($prompts) && empty(trim($prompts))) {
+            throw new \InvalidArgumentException("Prompt cannot be empty");
+        }
+        if (is_array($prompts) && empty(array_filter($prompts))) {
+            throw new \InvalidArgumentException("Prompts array cannot be empty");
+        }
+
         $data = array_filter([
             'messages'          => $this->formatMessages($prompts, $this->systemPrompt),
             'model'             => $this->model,

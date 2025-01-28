@@ -16,7 +16,7 @@ $response = $ai
     ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
     ->set('stream', false)
     ->query("What is the capital of South Africa?")
-    ->all()
+    ->one()
     ;
 
 print_r($response);

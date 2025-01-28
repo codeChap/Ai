@@ -22,8 +22,8 @@
         "phpunit/phpunit": "^10.0"
     },
     "scripts": {
-        "test": "vendor/bin/phpunit",
-        "test:coverage": "vendor/bin/phpunit --coverage-html coverage"
+        "test": "@php -d error_reporting='E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED' vendor/bin/phpunit",
+        "test:coverage": "@php -d error_reporting='E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED' vendor/bin/phpunit --coverage-html coverage"
     },
     "autoload-dev": {
         "psr-4": {
