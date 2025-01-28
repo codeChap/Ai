@@ -24,5 +24,10 @@
     "scripts": {
         "test": "vendor/bin/phpunit",
         "test:coverage": "vendor/bin/phpunit --coverage-html coverage"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Codechap\\Aiwrapper\\Tests\\": "tests/"
+        }
     }
 }
