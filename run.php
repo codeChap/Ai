@@ -11,7 +11,18 @@ $openaiKey = file_get_contents(realpath(__DIR__ . '/..') . '/OPENAI-API-KEY.txt'
 $anthropicKey = file_get_contents(realpath(__DIR__ . '/..') . '/ANTHROPIC-API-KEY.txt');
 
 
-
+// OpenAI Test
+print "### OpenAI Test ### \n";
+$openai = new AI('openai', $openaiKey);
+print $openai
+    ->set('temperature', 0)
+    ->set('model', 'gpt-4o-mini')
+    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+    ->set('stream', false)
+    ->query("What is the capital of South Africa?")
+    ->one()
+    ;
+print "\n\n";
 
 
 // Anthropic Test
