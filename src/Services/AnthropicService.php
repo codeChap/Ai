@@ -17,15 +17,15 @@ class AnthropicService implements AIServiceInterface
 
     private string $systemPrompt = 'You are Claude, a helpful AI assistant.';
 
-    protected string $model            = 'claude-3-5-sonnet-20241022';
-    protected ?float $temperature      = null;
-    protected ?int $maxTokens          = 1024;
-    protected ?array $stop             = null;
-    protected ?bool $stream            = false;
-    protected ?array $metadata         = null;
-    protected ?float $topP             = null;
-    protected ?float $topK             = null;
-    protected ?string $user            = null;
+    protected string $model       = 'claude-3-5-sonnet-20241022';
+    protected ?float $temperature = null;
+    protected ?int $maxTokens     = 1024;
+    protected ?array $stop        = null;
+    protected ?bool $stream       = false;
+    protected ?array $metadata    = null;
+    protected ?float $topP        = null;
+    protected ?float $topK        = null;
+    protected ?string $user       = null;
 
     private $curl;
 

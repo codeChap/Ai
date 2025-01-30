@@ -9,6 +9,20 @@ $xaiKey = file_get_contents(realpath(__DIR__ . '/..') . '/X-API-KEY.txt');
 $groqKey = file_get_contents(realpath(__DIR__ . '/..') . '/GROQ-API-KEY.txt');
 $openaiKey = file_get_contents(realpath(__DIR__ . '/..') . '/OPENAI-API-KEY.txt');
 $anthropicKey = file_get_contents(realpath(__DIR__ . '/..') . '/ANTHROPIC-API-KEY.txt');
+$mistralKey = file_get_contents(realpath(__DIR__ . '/..') . '/MISTRAL-API-KEY.txt');
+
+// Mistral Test
+print "### Mistral Test ### \n";
+$mistral = new AI('mistral', $mistralKey);
+print $mistral
+    ->set('temperature', 0)
+    ->set('model', 'mistral-large-latest')
+    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+    ->set('stream', false)
+    ->query("What is the capital of South Africa?")
+    ->one()
+    ;
+print "\n\n";
 
 // Groq Test
 print "### Groq Test ### \n";
