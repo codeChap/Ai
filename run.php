@@ -11,12 +11,12 @@ $openaiKey = file_get_contents(realpath(__DIR__ . '/..') . '/OPENAI-API-KEY.txt'
 $anthropicKey = file_get_contents(realpath(__DIR__ . '/..') . '/ANTHROPIC-API-KEY.txt');
 $mistralKey = file_get_contents(realpath(__DIR__ . '/..') . '/MISTRAL-API-KEY.txt');
 
-// Mistral Test
-print "### Mistral Test ### \n";
-$mistral = new AI('mistral', $mistralKey);
-print $mistral
+// Anthropic Test
+print "### Anthropic Test ### \n";
+$anthropic = new AI('anthropic', $anthropicKey);
+print $anthropic
     ->set('temperature', 0)
-    ->set('model', 'mistral-large-latest')
+    ->set('model', 'claude-3-5-sonnet-20241022')
     ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
     ->set('stream', false)
     ->query("What is the capital of South Africa?")
@@ -37,12 +37,12 @@ print $groq
     ;
 print "\n\n";
 
-// OpenAI Test
-print "### OpenAI Test ### \n";
-$openai = new AI('openai', $openaiKey);
-print $openai
+// Mistral Test
+print "### Mistral Test ### \n";
+$mistral = new AI('mistral', $mistralKey);
+print $mistral
     ->set('temperature', 0)
-    ->set('model', 'gpt-4o-mini')
+    ->set('model', 'mistral-large-latest')
     ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
     ->set('stream', false)
     ->query("What is the capital of South Africa?")
@@ -50,13 +50,12 @@ print $openai
     ;
 print "\n\n";
 
-
-// Anthropic Test
-print "### Anthropic Test ### \n";
-$anthropic = new AI('anthropic', $anthropicKey);
-print $anthropic
+// OpenAI Test
+print "### OpenAI Test ### \n";
+$openai = new AI('openai', $openaiKey);
+print $openai
     ->set('temperature', 0)
-    ->set('model', 'claude-3-5-sonnet-20241022')
+    ->set('model', 'gpt-4o-mini')
     ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
     ->set('stream', false)
     ->query("What is the capital of South Africa?")

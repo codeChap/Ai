@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Codechap\Aiwrapper;
 
-use Codechap\Aiwrapper\Services\OpenAiService;
+use Codechap\Aiwrapper\Interfaces\AI\AIServiceInterface;
 use Codechap\Aiwrapper\Services\AnthropicService;
-use Codechap\Aiwrapper\Services\XaiService;
+use Codechap\Aiwrapper\Services\ExampleService;
 use Codechap\Aiwrapper\Services\GroqService;
-use Codechap\Aiwrapper\Interfaces\AIServiceInterface;
+use Codechap\Aiwrapper\Services\MistralService;
+use Codechap\Aiwrapper\Services\OpenAiService;
+use Codechap\Aiwrapper\Services\XaiService;
 
 class AIWrapper {
     private AIServiceInterface $service;

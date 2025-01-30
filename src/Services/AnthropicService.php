@@ -2,77 +2,84 @@
 
 namespace Codechap\Aiwrapper\Services;
 
-use Codechap\Aiwrapper\Interfaces\AIServiceInterface;
+use Codechap\Aiwrapper\Interfaces\AI\AIServiceInterface;
+use Codechap\Aiwrapper\Abstract\AbstractAIService;
 use Codechap\Aiwrapper\Traits\AIServiceTrait;
+use Codechap\Aiwrapper\Traits\PropertyAccessTrait;
 use Codechap\Aiwrapper\Curl;
 use Codechap\Aiwrapper\Traits\HeadersTrait;
 
-class AnthropicService implements AIServiceInterface 
+class AnthropicService extends AbstractAIService 
 {
-    use AIServiceTrait;
-    use HeadersTrait;
+    private const DEFAULT_API_URL = 'https://api.anthropic.com/v1/';
+    private const API_VERSION = '2023-06-01';
+    private const CHAT_ENDPOINT = 'messages';
 
-    private string $apiKey;
-    private string $baseUrl;
+    /**
+     * API Configuration
+     */
+    protected string $systemPrompt = 'You are Claude, a helpful AI assistant.';
 
-    private string $systemPrompt = 'You are Claude, a helpful AI assistant.';
-
-    protected string $model       = 'claude-3-5-sonnet-20241022';
+    /**
+     * Model Configuration
+     */
+    protected string $model = 'claude-3-5-sonnet-20241022';
     protected ?float $temperature = null;
-    protected ?int $maxTokens     = 1024;
-    protected ?array $stop        = null;
-    protected ?bool $stream       = false;
-    protected ?array $metadata    = null;
-    protected ?float $topP        = null;
-    protected ?float $topK        = null;
-    protected ?string $user       = null;
+    protected ?int $maxTokens = 1024;
+    protected ?array $stop = null;
+    protected ?bool $stream = false;
 
-    private $curl;
+    /**
+     * Additional Parameters
+     */
+    protected ?array $metadata = null;
+    protected ?float $topP = null;
+    protected ?float $topK = null;
+    protected ?string $user = null;
 
-    public function __construct(string $apiKey, string $url = 'https://api.anthropic.com/v1/')
+    /**
+     * Constructor
+     *
+     * @param string $apiKey API key for authentication
+     * @param string $url Base URL for the API
+     * @throws \InvalidArgumentException if API key is empty
+     */
+    public function __construct(string $apiKey, string $url = self::DEFAULT_API_URL) 
     {
-        if (empty(trim($apiKey))) {
-            throw new \InvalidArgumentException("API key cannot be empty");
-        }
-
-        $this->apiKey = $apiKey;
-        $this->baseUrl = $url;
+        parent::__construct($apiKey, $url);
     }
 
-    public function get(string $name)
-    {
-        if(property_exists($this, $name)) {
-            return $this->$name;
-        }
-        throw new \Exception("Property $name does not exist in " . __CLASS__);
-    }
-
-    public function set(string $name, $value): self
-    {
-        if (property_exists($this, $name)) {
-            $this->$name = $value;
-            return $this;
-        }
-        throw new \Exception("Property $name does not exist in " . __CLASS__);
-    }
-
+    /**
+     * Send a query to the Anthropic API
+     *
+     * @param string|array $prompts Single prompt or array of prompts
+     * @return self
+     * @throws \InvalidArgumentException if prompts are empty
+     */
     public function query(string|array $prompts): self
     {
-        if (is_string($prompts) && empty(trim($prompts))) {
-            throw new \InvalidArgumentException("Prompt cannot be empty");
-        }
-        if (is_array($prompts) && empty(array_filter($prompts))) {
-            throw new \InvalidArgumentException("Prompts array cannot be empty");
-        }
+        $this->validatePrompts($prompts);
+        
+        $messages = $this->formatMessages($prompts);
+        $data = $this->prepareRequestData($messages);
+        $headers = $this->prepareHeaders();
+        
+        $this->sendRequest($data, $headers);
+        
+        return $this;
+    }
 
-        // Convert prompts to messages format without system message
-        $messages = is_array($prompts) 
-            ? array_map(fn($prompt) => ['role' => 'user', 'content' => $prompt], $prompts)
-            : [['role' => 'user', 'content' => $prompts]];
-
-        $data = array_filter([
+    /**
+     * Prepare the request data
+     *
+     * @param array $messages
+     * @return array
+     */
+    private function prepareRequestData(array $messages): array
+    {
+        return array_filter([
             'messages'    => $messages,
-            'system'      => $this->systemPrompt,  // System prompt as top-level parameter
+            'system'      => $this->systemPrompt,
             'model'       => $this->model,
             'max_tokens'  => $this->maxTokens,
             'metadata'    => $this->metadata,
@@ -82,30 +89,64 @@ class AnthropicService implements AIServiceInterface
             'top_k'       => $this->topK,
             'stop'        => $this->stop,
             'user'        => $this->user
-        ], function($value) {
-            return !is_null($value);
-        });
+        ], fn($value) => !is_null($value));
+    }
 
-        $headers = $this->getHeaders([
+    /**
+     * Prepare headers for the API request
+     *
+     * @return array
+     */
+    private function prepareHeaders(): array
+    {
+        return $this->getHeaders([
             'x-api-key'         => $this->apiKey,
-            'anthropic-version' => '2023-06-01',
+            'anthropic-version' => self::API_VERSION,
         ]);
+    }
 
-        $url = $this->baseUrl . 'messages';
-
+    /**
+     * Send the request to the API
+     *
+     * @param array $data
+     * @param array $headers
+     */
+    private function sendRequest(array $data, array $headers): void
+    {
+        $url = $this->baseUrl . self::CHAT_ENDPOINT;
         $this->curl = new Curl();
         $this->curl->post($data, $headers, $url);
-        return $this;
     }
 
-    public function one() : string
+    /**
+     * Get the first response from the API
+     *
+     * @return string
+     */
+    public function one(): string
     {
         $response = $this->curl->getResponse();
-        return $response['content'][0]['text'];
+        return $this->extractFirstResponse($response);
     }
 
-    public function all() : array
+    /**
+     * Get all responses from the API
+     *
+     * @return array
+     */
+    public function all(): array
     {
-        return $this->curl->getResponse()['content'];
+        $response = $this->curl->getResponse();
+        return $this->extractAllResponses($response);
+    }
+
+    protected function extractFirstResponse(array $response): string
+    {
+        return $response['content'][0]['text'] ?? '';
+    }
+
+    protected function extractAllResponses(array $response): array
+    {
+        return $response['content'] ?? [];
     }
 }

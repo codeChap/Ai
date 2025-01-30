@@ -1,35 +1,108 @@
-⚠️ **CRITICAL WARNING - DO NOT USE IN PRODUCTION** ⚠️
+⚠️ **NOT PRODUCTION READY** ⚠️
 
-
-# AIWrapper Project Outline
+# AI Wrapper
 
 ## Overview
-A flexible PHP wrapper for integrating multiple AI services (OpenAI, Anthropic, xAI, etc.).
+A flexible PHP wrapper for integrating multiple AI services.
+
+| Service   | Chat | Streaming | Functions |
+|-----------|------|-----------|-----------|
+| Anthropic | ✓    | ✕         | ✕         |
+| Groq      | ✓    | ✕         | ✕         |
+| Mistral   | ✓    | ✕         | ✕         |
+| OpenAI    | ✓    | ✕         | ✕         |
+| xAI       | ✓    | ✕         | ✕         |
 
 ## Requirements
 - PHP 8.3+
 - Composer
 
+### Basic Usage
+
+```php
+// Mistral Test
+$mistral = new AI('mistral', $mistralKey);
+print $mistral
+    ->set('temperature', 0)
+    ->set('model', 'mistral-large-latest')
+    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+    ->set('stream', false)
+    ->query("What is the capital of South Africa?")
+    ->one()
+    ;
+```
+
+```php
+// Groq Test
+$groq = new AI('groq', $groqKey);
+print $groq
+    ->set('temperature', 0)
+    ->set('model', 'deepseek-r1-distill-llama-70b')
+    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+    ->set('stream', false)
+    ->query("What is the capital of South Africa?")
+    ->one()
+    ;
+print "\n\n";
+```
+
+```php
+// OpenAI Test
+$openai = new AI('openai', $openaiKey);
+print $openai
+    ->set('temperature', 0)
+    ->set('model', 'gpt-4o-mini')
+    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+    ->set('stream', false)
+    ->query("What is the capital of South Africa?")
+    ->one()
+    ;
+```
+
+```php
+// Anthropic Test
+$anthropic = new AI('anthropic', $anthropicKey);
+print $anthropic
+    ->set('temperature', 0)
+    ->set('model', 'claude-3-5-sonnet-20241022')
+    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+    ->set('stream', false)
+    ->query("What is the capital of South Africa?")
+    ->one()
+    ;
+```
+
+```php
+// xAI Test
+$xai = new AI('xai', $xaiKey);
+print $xai
+    ->set('temperature', 0)
+    ->set('model', 'grok-2-latest')
+    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+    ->set('stream', false)
+    ->query("What is the capital of South Africa?")
+    ->one()
+    ;
+```
+
 ## Project Structure
 
-## Features
-1. **Automatic Service Discovery**
-   - Services are automatically discovered from the Services directory
-   - No manual registration required
-   - Follow naming convention: `{Name}Service.php`
+```
+src
+├── Interfaces
+│   ├── AIServiceInterface.php (Ensures consistent functionality across  AI services)
+├── Traits
+│   ├── AIServiceTrait.php (Common methods for AI services)
+│   ├── HeadersTrait.php (Common methods for headers)
+├── Services
+│   ├── OpenAiService.php (OpenAI service implementation)
+│   ├── AnthropicService.php (Anthropic service implementation)
+│   ├── GroqService.php (Groq service implementation)
+│   ├── MistralService.php (Mistral service implementation)
+│   └── XaiService.php (XAI service implementation)
+```
 
-2. **Flexible Integration**
-   - Easy to add new AI services
-   - Consistent interface across different providers
-   - Type-safe implementation
-
-3. **Modern PHP Features**
-   - Strict typing
-   - Readonly classes
-   - Constructor property promotion
-   - PHP 8.3 features
-
-## Service Implementation
+## Service Contribution
 To add a new AI service:
 1. Create a new file in `src/Services/` following the naming convention
 2. Implement the required methods:
@@ -50,42 +123,12 @@ To add a new AI service:
 6. Error handling improvements
 7. Logging system
 
-## Usage Examples
 
-### Basic Usage
-
-```php
-use Codechap\Aiwrapper\AIWrapper;
-
-// Initialize services with API keys
-$openai = new AIWrapper('openai', 'your-openai-api-key');
-$anthropic = new AIWrapper('anthropic', 'your-anthropic-api-key');
-$xai = new AIWrapper('xai', 'your-xai-api-key');
-$groq = new AIWrapper('groq', 'your-groq-api-key');
-
-// Simple query with string prompt
-$response = $xai->query('What is the meaning of life?')->content();
-
-// Using array of messages
-$messages = [
-    ['role' => 'system', 'content' => 'You are a helpful assistant.'],
-    ['role' => 'user', 'content' => 'Tell me about PHP 8.3'],
-];
-$response = $xai->query($messages)->content();
-
-// Configuring model parameters
-$xai->set('temperature', 0.7)
-    ->set('maxTokens', 1000)
-    ->set('model', 'grok-2-latest');
-
-$response = $xai->query('Write a poem about coding')->content();
-```
-
-### Adding a New Service
+### Contributing by adding a New Service
 
 To add a new AI service:
 
-1. Create a new file in `src/Services/` following the naming convention:
+1. Create a new file in `src/Services/` following the naming convention and copy the contents of the ExampleService.php file.
 
 ```php
 <?php
