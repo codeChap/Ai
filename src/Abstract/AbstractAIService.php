@@ -2,13 +2,13 @@
 
 namespace Codechap\Aiwrapper\Abstract;
 
-use Codechap\Aiwrapper\Interfaces\AI\AIServiceInterface;
+use Codechap\Aiwrapper\Interfaces\ServiceInterface;
 use Codechap\Aiwrapper\Traits\AIServiceTrait;
 use Codechap\Aiwrapper\Traits\HeadersTrait;
 use Codechap\Aiwrapper\Traits\PropertyAccessTrait;
 use Codechap\Aiwrapper\Curl;
 
-abstract class AbstractAIService implements AIServiceInterface
+abstract class AbstractAIService implements ServiceInterface
 {
     use AIServiceTrait;
     use HeadersTrait;

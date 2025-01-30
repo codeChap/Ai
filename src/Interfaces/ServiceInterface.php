@@ -1,6 +1,6 @@
 <?php
 
-namespace Codechap\Aiwrapper\Interfaces\AI;
+namespace Codechap\Aiwrapper\Interfaces;
 
 /**
  * Interface AIServiceInterface
@@ -8,7 +8,7 @@ namespace Codechap\Aiwrapper\Interfaces\AI;
  * Defines the contract for AI service implementations that handle query operations.
  * This interface ensures consistent query functionality across different AI services.
  */
-interface AIServiceInterface
+interface ServiceInterface
 {
     /**
      * Sends a query to the AI service.

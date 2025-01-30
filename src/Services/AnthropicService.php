@@ -2,7 +2,7 @@
 
 namespace Codechap\Aiwrapper\Services;
 
-use Codechap\Aiwrapper\Interfaces\AI\AIServiceInterface;
+use Codechap\Aiwrapper\Interfaces\ServiceInterface;
 use Codechap\Aiwrapper\Abstract\AbstractAIService;
 use Codechap\Aiwrapper\Traits\AIServiceTrait;
 use Codechap\Aiwrapper\Traits\PropertyAccessTrait;

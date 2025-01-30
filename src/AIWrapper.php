@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Codechap\Aiwrapper;
 
-use Codechap\Aiwrapper\Interfaces\AI\AIServiceInterface;
+use Codechap\Aiwrapper\Interfaces\ServiceInterface;
 use Codechap\Aiwrapper\Services\AnthropicService;
 use Codechap\Aiwrapper\Services\ExampleService;
 use Codechap\Aiwrapper\Services\GroqService;
@@ -13,7 +13,7 @@ use Codechap\Aiwrapper\Services\OpenAiService;
 use Codechap\Aiwrapper\Services\XaiService;
 
 class AIWrapper {
-    private AIServiceInterface $service;
+    private ServiceInterface $service;
     private static $serviceRegistry = [];
 
     public function __construct(
@@ -72,9 +72,9 @@ class AIWrapper {
      * Query the AI service
      *
      * @param string|array $prompt The prompt to send to the AI service
-     * @return AIServiceInterface The service instance for method chaining
+     * @return ServiceInterface The service instance for method chaining
      */
-    public function query(string|array $prompt): AIServiceInterface {
+    public function query(string|array $prompt): ServiceInterface {
         return $this->service->query($prompt);
     }
 
