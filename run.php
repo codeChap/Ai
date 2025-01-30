@@ -10,6 +10,18 @@ $groqKey = file_get_contents(realpath(__DIR__ . '/..') . '/GROQ-API-KEY.txt');
 $openaiKey = file_get_contents(realpath(__DIR__ . '/..') . '/OPENAI-API-KEY.txt');
 $anthropicKey = file_get_contents(realpath(__DIR__ . '/..') . '/ANTHROPIC-API-KEY.txt');
 
+// Groq Test
+print "### Groq Test ### \n";
+$groq = new AI('groq', $groqKey);
+print $groq
+    ->set('temperature', 0)
+    ->set('model', 'deepseek-r1-distill-llama-70b')
+    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+    ->set('stream', false)
+    ->query("What is the capital of South Africa?")
+    ->one()
+    ;
+print "\n\n";
 
 // OpenAI Test
 print "### OpenAI Test ### \n";
