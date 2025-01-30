@@ -70,10 +70,9 @@ class AIWrapper {
      * Query the AI service
      *
      * @param string|array $prompt The prompt to send to the AI service
-     * @return mixed The response from the AI service
-     *
+     * @return AIServiceInterface The service instance for method chaining
      */
-    public function query(string|array $prompt): Curl {
+    public function query(string|array $prompt): AIServiceInterface {
         return $this->service->query($prompt);
     }
 

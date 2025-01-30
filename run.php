@@ -2,16 +2,35 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use Codechap\Aiwrapper\AIWrapper;
+use Codechap\Aiwrapper\AIWrapper AS AI;
 
 //Get the API Key
-$apiKey = file_get_contents(realpath(__DIR__ . '/..') . '/X-API-KEY.txt');
+$xaiKey = file_get_contents(realpath(__DIR__ . '/..') . '/X-API-KEY.txt');
+$groqKey = file_get_contents(realpath(__DIR__ . '/..') . '/GROQ-API-KEY.txt');
+$openaiKey = file_get_contents(realpath(__DIR__ . '/..') . '/OPENAI-API-KEY.txt');
+$anthropicKey = file_get_contents(realpath(__DIR__ . '/..') . '/ANTHROPIC-API-KEY.txt');
 
-// Create an instance of AIWrapper
-$ai = new AIWrapper('xai', $apiKey);
 
-// Configure parameters and send query
-$response = $ai
+
+
+
+// Anthropic Test
+print "### Anthropic Test ### \n";
+$anthropic = new AI('anthropic', $anthropicKey);
+print $anthropic
+    ->set('temperature', 0)
+    ->set('model', 'claude-3-5-sonnet-20241022')
+    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+    ->set('stream', false)
+    ->query("What is the capital of South Africa?")
+    ->one()
+    ;
+print "\n\n";
+
+// xAI Test
+print "### xAI Test ### \n";
+$xai = new AI('xai', $xaiKey);
+print $xai
     ->set('temperature', 0)
     ->set('model', 'grok-2-latest')
     ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
@@ -19,7 +38,5 @@ $response = $ai
     ->query("What is the capital of South Africa?")
     ->one()
     ;
-
-print_r($response);
-
+print "\n\n";
 ?>

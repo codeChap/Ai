@@ -7,16 +7,14 @@ trait HeadersTrait
     /**
      * Get the default headers for API requests
      *
-     * @param string $apiKey The API key for authentication
-     * @param string $contentType The content type for the request (default: application/json)
+     * @param array $headers Additional headers to add
      * @return array
      */
-    protected function getHeaders(string $apiKey, string $contentType = 'application/json'): array
+    protected function getHeaders(array $headers = []): array
     {
-        return [
-            'Content-Type' => $contentType,
-            'Authorization' => "Bearer " . trim($apiKey),
-        ];
+        return array_merge([
+            'Content-Type'  => 'application/json',
+        ], $headers);
     }
 
     /**
@@ -28,9 +26,9 @@ trait HeadersTrait
     protected function getStreamHeaders(string $apiKey): array
     {
         return array_merge($this->getHeaders($apiKey), [
-            'Accept' => 'text/event-stream',
+            'Accept'        => 'text/event-stream',
             'Cache-Control' => 'no-cache',
-            'Connection' => 'keep-alive',
+            'Connection'    => 'keep-alive',
         ]);
     }
 

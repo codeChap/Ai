@@ -37,6 +37,8 @@ class XaiService implements AIServiceInterface
     protected ?float $topP             = null;
     protected ?string $user            = null;
 
+    private $curl;
+
     public function __construct(string $apiKey, string $url = 'https://api.x.ai/v1/')
     {
         if (empty(trim($apiKey))) {
@@ -64,7 +66,7 @@ class XaiService implements AIServiceInterface
         throw new \Exception("Property $name does not exist in " . __CLASS__);
     }
 
-    public function query(string|array $prompts): Curl
+    public function query(string|array $prompts): self
     {
         if (is_string($prompts) && empty(trim($prompts))) {
             throw new \InvalidArgumentException("Prompt cannot be empty");
@@ -73,8 +75,10 @@ class XaiService implements AIServiceInterface
             throw new \InvalidArgumentException("Prompts array cannot be empty");
         }
 
+        $messages = $this->formatMessages($prompts, $this->systemPrompt);
+
         $data = array_filter([
-            'messages'          => $this->formatMessages($prompts, $this->systemPrompt),
+            'messages'          => $messages,
             'model'             => $this->model,
             'stream'            => $this->stream,
             'temperature'       => $this->temperature,
@@ -98,9 +102,34 @@ class XaiService implements AIServiceInterface
             return !is_null($value);
         });
 
-        $headers = $this->getHeaders($this->apiKey);
+        $headers = $this->getHeaders([
+            'Authorization' => "Bearer " . trim($this->apiKey),
+        ]);
         $url = $this->baseUrl . 'chat/completions';
 
-        return new Curl()->post($data, $headers, $url);
+        $this->curl = new Curl();
+        $this->curl->post($data, $headers, $url);
+        return $this;
+    }
+
+    public function one() : string
+    {
+        $response = $this->curl->getResponse();
+        if(isset($response['choices'][0]['message']['content'])) {
+            return $response['choices'][0]['message']['content'];
+        }
+        return '';
+    }
+
+    public function all() : array
+    {
+        $response = $this->curl->getResponse();
+        $content = [];
+        if(isset($response['choices'][0]['message']['content'])) {
+            foreach($response['choices'] as $choice) {
+                $content[] = $choice['message']['content'];
+            }
+        }
+        return $content;
     }
 }

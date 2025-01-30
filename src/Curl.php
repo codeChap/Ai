@@ -17,12 +17,27 @@ class Curl {
 
         $isStreaming = isset($data['stream']) && $data['stream'] === true;
 
+        // Clean the headers - trim whitespace and remove any newlines
+        $headers = array_map(function($header) {
+            return trim($header);
+        }, $headers);
+
+        // Make sure we only have one Content-Type header
+        if (!$this->hasContentTypeHeader($headers)) {
+            $headers[] = 'Content-Type: application/json';
+        }
+
+        $jsonData = json_encode(array_filter($data));
+        if ($jsonData === false) {
+            throw new \Exception('Failed to encode JSON: ' . json_last_error());
+        }
+
         curl_setopt_array($curl, [
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => !$isStreaming,
             CURLOPT_POST => true,
             CURLOPT_HTTPHEADER => (new self)->formatHeaders($headers),
-            CURLOPT_POSTFIELDS => json_encode($data)
+            CURLOPT_POSTFIELDS => $jsonData
         ]);
 
         if ($isStreaming) {
@@ -68,27 +83,23 @@ class Curl {
         return $this;
     }
 
-    public function response() : array
+    private function hasContentTypeHeader(array $headers): bool
+    {
+        foreach ($headers as $header) {
+            if (stripos($header, 'Content-Type:') !== false) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Get the response data
+     * 
+     * @return array The response data
+     */
+    public function getResponse(): array
     {
         return $this->response;
-    }
-
-    public function one() : string
-    {
-        if(isset($this->response['choices'][0]['message']['content'])) {
-            return $this->response['choices'][0]['message']['content'];
-        }
-        return '';
-    }
-
-    public function all() : array
-    {
-        if(isset($this->response['choices'][0]['message']['content'])) {
-            foreach($this->response['choices'] as $choice) {
-                $content[] = $choice['message']['content'];
-            }
-            return $content;
-        }
-        return [];
     }
 }

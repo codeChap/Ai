@@ -6,5 +6,5 @@ use Codechap\Aiwrapper\Curl;
 
 interface AIServiceInterface
 {
-    public function query(string|array $prompts): Curl;
+    public function query(string|array $prompts): self;
 }
