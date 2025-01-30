@@ -1,3 +1,6 @@
+⚠️ **CRITICAL WARNING - DO NOT USE IN PRODUCTION** ⚠️
+
+
 # AIWrapper Project Outline
 
 ## Overview

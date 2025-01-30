@@ -4,6 +4,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use Codechap\Aiwrapper\AIWrapper;
 
+//Get the API Key
 $apiKey = file_get_contents(realpath(__DIR__ . '/..') . '/X-API-KEY.txt');
 
 // Create an instance of AIWrapper

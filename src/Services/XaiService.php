@@ -17,32 +17,32 @@ class XaiService implements AIServiceInterface
 
     private string $systemPrompt = 'You are a helpful assistant.';
 
-    protected string $model = 'grok-2-latest';
-    protected ?bool $deferred = null;
+    protected string $model            = 'grok-2-latest';
+    protected ?bool $deferred          = null;
     protected ?float $frequencyPenalty = null;
-    protected ?array $logitBias = null;
-    protected ?bool $logprobs = null;
-    protected ?int $maxTokens = null;
-    protected ?int $n = null;
-    protected ?float $presencePenalty = null;
-    protected ?array $responseFormat = null;
-    protected ?int $seed = null;
-    protected ?array $stop = null;
-    protected ?bool $stream = false;
-    protected ?array $streamOptions = null;
-    protected ?float $temperature = null;
-    protected mixed $toolChoice = null;
-    protected ?array $tools = null;
-    protected ?int $topLogprobs = null;
-    protected ?float $topP = null;
-    protected ?string $user = null;
-    
+    protected ?array $logitBias        = null;
+    protected ?bool $logprobs          = null;
+    protected ?int $maxTokens          = null;
+    protected ?int $n                  = null;
+    protected ?float $presencePenalty  = null;
+    protected ?array $responseFormat   = null;
+    protected ?int $seed               = null;
+    protected ?array $stop             = null;
+    protected ?bool $stream            = false;
+    protected ?array $streamOptions    = null;
+    protected ?float $temperature      = null;
+    protected mixed $toolChoice        = null;
+    protected ?array $tools            = null;
+    protected ?int $topLogprobs        = null;
+    protected ?float $topP             = null;
+    protected ?string $user            = null;
+
     public function __construct(string $apiKey, string $url = 'https://api.x.ai/v1/')
     {
         if (empty(trim($apiKey))) {
             throw new \InvalidArgumentException("API key cannot be empty");
         }
-        
+
         $this->apiKey = $apiKey;
         $this->baseUrl = $url;
     }
@@ -63,7 +63,7 @@ class XaiService implements AIServiceInterface
         }
         throw new \Exception("Property $name does not exist in " . __CLASS__);
     }
-    
+
     public function query(string|array $prompts): Curl
     {
         if (is_string($prompts) && empty(trim($prompts))) {

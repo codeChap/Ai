@@ -13,7 +13,8 @@ class Curl {
 
     public function post(array $data, array $headers, $url): self {
         $curl = curl_init();
-        
+        $this->content = []; // Initialize content array
+
         $isStreaming = isset($data['stream']) && $data['stream'] === true;
 
         curl_setopt_array($curl, [
@@ -26,16 +27,22 @@ class Curl {
 
         if ($isStreaming) {
             curl_setopt($curl, CURLOPT_WRITEFUNCTION, function($curl, $data) {
-                $this->content[] = $data;
                 // Strip away "data: " prefix and decode JSON
                 $cleanData = str_replace('data: ', '', $data);
                 if (trim($cleanData)) {  // Only process non-empty data
-                    $jsonData = json_decode($cleanData, true);
-                    $this->content[] = $jsonData['choices'][0]['delta']['content'];
+                    try {
+                        $jsonData = json_decode($cleanData, true);
+                        if ($jsonData && isset($jsonData['choices'][0]['delta']['content'])) {
+                            $this->content[] = $jsonData['choices'][0]['delta']['content'];
+                            print $jsonData['choices'][0]['delta']['content'];
+                        }
+                    } catch (\Exception $e) {
+                        // Skip malformed JSON data
+                    }
                 }
                 return strlen($data);
             });
-            
+
             curl_exec($curl);
             $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             curl_close($curl);
@@ -44,7 +51,8 @@ class Curl {
                 throw new \RuntimeException("HTTP error: $httpCode");
             }
 
-            return null;
+            $this->response = ['choices' => [['message' => ['content' => implode('', $this->content)]]]];
+            return $this;
         }
 
         $response = curl_exec($curl);

@@ -27,7 +27,7 @@ class AIWrapper {
         }
 
         $this->loadServices();
-        
+
         if (!isset(self::$serviceRegistry[$serviceType])) {
             // Try to load the service directly from the Services directory
             $serviceClass = 'Codechap\\Aiwrapper\\Services\\' . ucfirst($serviceType) . 'Service';
@@ -68,21 +68,43 @@ class AIWrapper {
 
     /**
      * Query the AI service
+     *
+     * @param string|array $prompt The prompt to send to the AI service
+     * @return mixed The response from the AI service
+     *
      */
     public function query(string|array $prompt): Curl {
         return $this->service->query($prompt);
     }
 
+    /**
+     * Gets the content of the result.
+     *
+     * @return string The content of the result
+     */
     public function content(): string
     {
         return $this->service->content();
     }
 
+    /**
+     * Get a specific property from the service
+     *
+     * @param string $name The property name to get
+     * @return mixed The value of the property
+     */
     public function get(string $name)
     {
         return $this->service->get($name);
     }
 
+    /**
+     * Set a specific property for the service
+     *
+     * @param string $name The property name to set
+     * @param mixed $value The value to set
+     * @return self Returns the current instance
+     */
     public function set(string $name, $value): self
     {
         $this->service->set($name, $value);
