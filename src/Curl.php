@@ -10,77 +10,111 @@ class Curl {
 
     private array $response;
     private array $content;
+    private $curl;
 
-    public function post(array $data, array $headers, $url): self {
-        $curl = curl_init();
-        $this->content = []; // Initialize content array
+    public function post(array $data, array $headers, string $url): self {
+        $this->initializeCurl();
+        $this->content = [];
 
-        $isStreaming = isset($data['stream']) && $data['stream'] === true;
+        $isStreaming = $data['stream'] ?? false;
+        $headers = $this->prepareHeaders($headers);
+        
+        $this->setCurlOptions($url, $isStreaming, $headers, $this->prepareData($data));
 
-        // Clean the headers - trim whitespace and remove any newlines
-        $headers = array_map(function($header) {
-            return trim($header);
-        }, $headers);
+        return $isStreaming ? 
+            $this->handleStreamingResponse() : 
+            $this->handleStandardResponse();
+    }
 
-        // Make sure we only have one Content-Type header
+    private function initializeCurl(): void {
+        $this->curl = curl_init();
+        if ($this->curl === false) {
+            throw new \RuntimeException('Failed to initialize cURL');
+        }
+    }
+
+    private function prepareHeaders(array $headers): array {
+        $headers = array_map('trim', $headers);
         if (!$this->hasContentTypeHeader($headers)) {
             $headers[] = 'Content-Type: application/json';
         }
+        return $headers;
+    }
 
+    private function prepareData(array $data): string {
         $jsonData = json_encode(array_filter($data));
         if ($jsonData === false) {
-            throw new \Exception('Failed to encode JSON: ' . json_last_error());
+            throw new \RuntimeException('Failed to encode JSON: ' . json_last_error_msg());
         }
+        return $jsonData;
+    }
 
-        curl_setopt_array($curl, [
+    private function setCurlOptions(string $url, bool $isStreaming, array $headers, string $jsonData): void {
+        curl_setopt_array($this->curl, [
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => !$isStreaming,
             CURLOPT_POST => true,
-            CURLOPT_HTTPHEADER => (new self)->formatHeaders($headers),
+            CURLOPT_HTTPHEADER => $this->formatHeaders($headers),
             CURLOPT_POSTFIELDS => $jsonData
         ]);
 
         if ($isStreaming) {
-            curl_setopt($curl, CURLOPT_WRITEFUNCTION, function($curl, $data) {
-                // Strip away "data: " prefix and decode JSON
-                $cleanData = str_replace('data: ', '', $data);
-                if (trim($cleanData)) {  // Only process non-empty data
-                    try {
-                        $jsonData = json_decode($cleanData, true);
-                        if ($jsonData && isset($jsonData['choices'][0]['delta']['content'])) {
-                            $this->content[] = $jsonData['choices'][0]['delta']['content'];
-                            print $jsonData['choices'][0]['delta']['content'];
-                        }
-                    } catch (\Exception $e) {
-                        // Skip malformed JSON data
-                    }
+            curl_setopt($this->curl, CURLOPT_WRITEFUNCTION, [$this, 'handleStreamingData']);
+        }
+    }
+
+    private function handleStreamingData($curl, string $data): int {
+        $cleanData = str_replace('data: ', '', $data);
+        if (trim($cleanData)) {
+            try {
+                $jsonData = json_decode($cleanData, true);
+                if ($jsonData && isset($jsonData['choices'][0]['delta']['content'])) {
+                    $content = $jsonData['choices'][0]['delta']['content'];
+                    $this->content[] = $content;
+                    print $content;
                 }
-                return strlen($data);
-            });
-
-            curl_exec($curl);
-            $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-            curl_close($curl);
-
-            if ($httpCode !== 200) {
-                throw new \RuntimeException("HTTP error: $httpCode");
+            } catch (\Exception $e) {
+                // Skip malformed JSON data
             }
+        }
+        return strlen($data);
+    }
 
-            $this->response = ['choices' => [['message' => ['content' => implode('', $this->content)]]]];
-            return $this;
+    private function handleStreamingResponse(): self {
+        $this->executeRequest();
+        $this->response = [
+            'choices' => [
+                ['message' => ['content' => implode('', $this->content)]]
+            ]
+        ];
+        return $this;
+    }
+
+    private function handleStandardResponse(): self {
+        $response = $this->executeRequest();
+        $this->response = json_decode($response, true);
+        return $this;
+    }
+
+    private function executeRequest(): ?string {
+        $response = curl_exec($this->curl);
+        $httpCode = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
+        
+        if ($response === false) {
+            $error = curl_error($this->curl);
+            curl_close($this->curl);
+            throw new \RuntimeException("cURL error: $error");
         }
 
-        $response = curl_exec($curl);
-        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
+        curl_close($this->curl);
 
         if ($httpCode !== 200) {
-            throw new \RuntimeException("HTTP error: $httpCode, Response: $response");
+            throw new \RuntimeException(
+                "HTTP error: $httpCode" . ($response ? ", Response: $response" : '')
+            );
         }
 
-        $this->response = json_decode($response, true);
-
-        return $this;
+        return $response;
     }
 
     private function hasContentTypeHeader(array $headers): bool
