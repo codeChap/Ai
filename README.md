@@ -1,5 +1,3 @@
-⚠️ **NOT PRODUCTION READY** ⚠️
-
 # AI Wrapper
 
 ## Overview
