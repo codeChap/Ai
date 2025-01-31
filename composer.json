@@ -14,7 +14,6 @@
             "email": "hello@codechap.com"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
         "php": "^8.3"
     },
