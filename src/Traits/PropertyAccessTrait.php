@@ -1,6 +1,6 @@
 <?php
 
-namespace Codechap\Aiwrapper\Traits;
+namespace codechap\ai\Traits;
 
 trait PropertyAccessTrait
 {

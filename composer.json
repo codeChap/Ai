@@ -1,11 +1,11 @@
 {
-    "name": "codechap/aiwrapper",
+    "name": "codechap/ai",
     "description": "A generic PHP wrapper for integrating multiple AI services like OpenAI, Anthropic, and xAI.",
     "type": "library",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Codechap\\Aiwrapper\\": "src/"
+            "codechap\\ai\\": "src/"
         }
     },
     "authors": [
@@ -26,7 +26,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Codechap\\Aiwrapper\\Tests\\": "tests/"
+            "codechap\\ai\\Tests\\": "tests/"
         }
     }
 }

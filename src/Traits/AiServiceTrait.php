@@ -1,8 +1,8 @@
 <?php
 
-namespace Codechap\Aiwrapper\Traits;
+namespace codechap\ai\Traits;
 
-trait AIServiceTrait
+trait AiServiceTrait
 {
     protected function formatMessages(string|array $prompt, string|bool $systemMessage = false): array
     {

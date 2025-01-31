@@ -1,15 +1,15 @@
 <?php
 
-namespace Codechap\Aiwrapper\Services;
+namespace codechap\ai\Services;
 
-use Codechap\Aiwrapper\Interfaces\ServiceInterface;
-use Codechap\Aiwrapper\Abstract\AbstractAIService;
-use Codechap\Aiwrapper\Traits\AIServiceTrait;
-use Codechap\Aiwrapper\Traits\PropertyAccessTrait;
-use Codechap\Aiwrapper\Curl;
-use Codechap\Aiwrapper\Traits\HeadersTrait;
+use codechap\ai\Interfaces\ServiceInterface;
+use codechap\ai\Abstracts\AbstractAiService;
+use codechap\ai\Traits\AIServiceTrait;
+use codechap\ai\Traits\PropertyAccessTrait;
+use codechap\ai\Traits\HeadersTrait;
+use codechap\ai\Curl;
 
-class AnthropicService extends AbstractAIService 
+class AnthropicService extends AbstractAiService 
 {
     private const DEFAULT_API_URL = 'https://api.anthropic.com/v1/';
     private const API_VERSION = '2023-06-01';

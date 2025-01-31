@@ -1,8 +1,8 @@
 <?php
 
-namespace Codechap\Aiwrapper;
+namespace codechap\ai;
 
-use Codechap\Aiwrapper\Traits\HeadersTrait;
+use codechap\ai\Traits\HeadersTrait;
 
 class Curl {
 

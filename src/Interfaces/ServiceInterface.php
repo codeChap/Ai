@@ -1,6 +1,6 @@
 <?php
 
-namespace Codechap\Aiwrapper\Interfaces;
+namespace codechap\ai\Interfaces;
 
 /**
  * Interface AIServiceInterface

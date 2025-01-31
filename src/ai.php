@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Codechap\Aiwrapper;
+namespace codechap\ai;
 
-use Codechap\Aiwrapper\Interfaces\ServiceInterface;
-use Codechap\Aiwrapper\Services\AnthropicService;
-use Codechap\Aiwrapper\Services\ExampleService;
-use Codechap\Aiwrapper\Services\GroqService;
-use Codechap\Aiwrapper\Services\MistralService;
-use Codechap\Aiwrapper\Services\OpenAiService;
-use Codechap\Aiwrapper\Services\XaiService;
+use codechap\ai\Interfaces\ServiceInterface;
+use codechap\ai\Services\AnthropicService;
+use codechap\ai\Services\ExampleService;
+use codechap\ai\Services\GroqService;
+use codechap\ai\Services\MistralService;
+use codechap\ai\Services\OpenAiService;
+use codechap\ai\Services\XaiService;
 
-class AIWrapper {
+class ai {
     private ServiceInterface $service;
     private static $serviceRegistry = [];
 
@@ -32,7 +32,7 @@ class AIWrapper {
 
         if (!isset(self::$serviceRegistry[$serviceType])) {
             // Try to load the service directly from the Services directory
-            $serviceClass = 'Codechap\\Aiwrapper\\Services\\' . ucfirst($serviceType) . 'Service';
+            $serviceClass = 'codechap\\ai\\Services\\' . ucfirst($serviceType) . 'Service';
             if (class_exists($serviceClass)) {
                 self::registerService($serviceType, $serviceClass);
             } else {
@@ -54,7 +54,7 @@ class AIWrapper {
                 foreach (glob($servicesPath . '/*Service.php') as $file) {
                     $filename = basename($file, '.php');
                     $serviceType = strtolower(str_replace('Service', '', $filename));
-                    $serviceClass = 'Codechap\\Aiwrapper\\Services\\' . $filename;
+                    $serviceClass = 'codechap\\ai\\Services\\' . $filename;
                     self::registerService($serviceType, $serviceClass);
                 }
             }

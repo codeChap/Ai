@@ -1,17 +1,17 @@
 <?php
 
-namespace Codechap\Aiwrapper\Services;
+namespace codechap\ai\Services;
 
-use Codechap\Aiwrapper\Interfaces\ServiceInterface;
-use Codechap\Aiwrapper\Abstract\AbstractAIService;
-use Codechap\Aiwrapper\Traits\AIServiceTrait;
-use Codechap\Aiwrapper\Traits\PropertyAccessTrait;
-use Codechap\Aiwrapper\Curl;
-use Codechap\Aiwrapper\Traits\HeadersTrait;
+use codechap\ai\Interfaces\ServiceInterface;
+use codechap\ai\Abstracts\AbstractAiService;
+use codechap\ai\Traits\AiServiceTrait;
+use codechap\ai\Traits\PropertyAccessTrait;
+use codechap\ai\Curl;
+use codechap\ai\Traits\HeadersTrait;
 
-class XaiService extends AbstractAIService 
+class XaiService extends AbstractAiService 
 {
-    use AIServiceTrait;
+    use AiServiceTrait;
     use HeadersTrait;
     use PropertyAccessTrait;
 
