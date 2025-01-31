@@ -20,7 +20,7 @@ class MistralService extends AbstractAiService
 
     protected string $systemPrompt = 'You are a helpful assistant.';
 
-    protected string $model       = 'mistral-large-latest';
+    protected string $model       = 'mistral-small-latest';
     protected ?bool $stream       = false;
     protected ?float $temperature = null;
     protected ?float $topP        = null;
