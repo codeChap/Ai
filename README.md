@@ -23,9 +23,12 @@ composer require codechap/aiwrapper
 
 ## Basic Usage
 
+
 ```php
+use codechap\ai\ai;
+
 // Mistral
-$mistral = new AI('mistral', $mistralKey);
+$mistral = new ai('mistral', $mistralKey);
 print $mistral
     ->set('temperature', 0)
     ->set('model', 'mistral-large-latest')
@@ -38,7 +41,7 @@ print $mistral
 
 ```php
 // Groq
-$groq = new AI('groq', $groqKey);
+$groq = new ai('groq', $groqKey);
 print $groq
     ->set('temperature', 0)
     ->set('model', 'deepseek-r1-distill-llama-70b')
@@ -52,7 +55,7 @@ print "\n\n";
 
 ```php
 // OpenAI
-$openai = new AI('openai', $openaiKey);
+$openai = new ai('openai', $openaiKey);
 print $openai
     ->set('temperature', 0)
     ->set('model', 'gpt-4o-mini')
@@ -65,7 +68,7 @@ print $openai
 
 ```php
 // Anthropic
-$anthropic = new AI('anthropic', $anthropicKey);
+$anthropic = new ai('anthropic', $anthropicKey);
 print $anthropic
     ->set('temperature', 0)
     ->set('model', 'claude-3-5-sonnet-20241022')
@@ -78,7 +81,7 @@ print $anthropic
 
 ```php
 // xAI
-$xai = new AI('xai', $xaiKey);
+$xai = new ai('xai', $xaiKey);
 print $xai
     ->set('temperature', 0)
     ->set('model', 'grok-2-latest')
@@ -91,27 +94,7 @@ print $xai
 
 ## Contributing
 
-### Project Structure
-
-```
-src/
-├── Abstract/
-│   └── AbstractAIService.php (Base abstract class for AI services)
-├── Interfaces/
-│   └── ServiceInterface.php (Core interface for AI services)
-├── Services/
-│   ├── AnthropicService.php (Anthropic implementation)
-│   ├── GroqService.php (Groq implementation)
-│   ├── MistralService.php (Mistral implementation)
-│   ├── OpenAiService.php (OpenAI implementation)
-│   ├── XaiService.php (xAI implementation)
-│   └── ExampleService.php (Template for new services)
-├── Traits/
-│   ├── AIServiceTrait.php (Common methods for AI services)
-│   └── HeadersTrait.php (Common methods for headers)
-├── AIWrapper.php (Main wrapper class)
-└── Curl.php (HTTP client implementation)
-```
+ - Todo
 
 ### Testing
 - PHPUnit test suite
