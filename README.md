@@ -6,22 +6,27 @@
 A flexible PHP wrapper for integrating multiple AI services.
 
 | Service   | Chat | Streaming | Functions/Tools | Computer Vision | Prompt Caching | PDF support  |
-|-----------|------|-----------|-----------------|-----------------|-----------------|-------------|
-| Anthropic | ✓    | ✕ Planned | ✕ Planned       | ✕ Planned        | ✕ Planned      | ✕ Planned   |
-| Groq      | ✓    | ✕ Planned | ✕ Planned       | ✕                | ✕              | ✕           |
-| Mistral   | ✓    | ✕ Planned | ✕ Planned       | ✕                | ✕              | ✕           |
-| OpenAI    | ✓    | ✕ Planned | ✕ Planned       | ✕                | ✕              | ✕           |
-| xAI       | ✓    | ✕ Planned | ✕ Planned       | ✕ Planned        | ✕              | ✕           |
+|-----------|------|-----------|-----------------|-----------------|----------------|--------------|
+| Anthropic | ✓    | ✕         | ✕               | ✕               | ✕              | ✕            |
+| Groq      | ✓    | ✕         | ✕               | ✕               | ✕              | ✕            |
+| Mistral   | ✓    | ✕         | ✕               | ✕               | ✕              | ✕            |
+| OpenAI    | ✓    | ✕         | ✕               | ✕               | ✕              | ✕            |
+| xAI       | ✓    | ✕         | ✕               | ✕               | ✕              | ✕            |
 
 
 ## Requirements
 - PHP 8.3+
 - Composer
 
-### Basic Usage
+## Installation
+```bash
+composer require codechap/aiwrapper
+```
+
+## Basic Usage
 
 ```php
-// Mistral Test
+// Mistral
 $mistral = new AI('mistral', $mistralKey);
 print $mistral
     ->set('temperature', 0)
@@ -34,7 +39,7 @@ print $mistral
 ```
 
 ```php
-// Groq Test
+// Groq
 $groq = new AI('groq', $groqKey);
 print $groq
     ->set('temperature', 0)
@@ -48,7 +53,7 @@ print "\n\n";
 ```
 
 ```php
-// OpenAI Test
+// OpenAI
 $openai = new AI('openai', $openaiKey);
 print $openai
     ->set('temperature', 0)
@@ -61,7 +66,7 @@ print $openai
 ```
 
 ```php
-// Anthropic Test
+// Anthropic
 $anthropic = new AI('anthropic', $anthropicKey);
 print $anthropic
     ->set('temperature', 0)
@@ -74,7 +79,7 @@ print $anthropic
 ```
 
 ```php
-// xAI Test
+// xAI
 $xai = new AI('xai', $xaiKey);
 print $xai
     ->set('temperature', 0)
