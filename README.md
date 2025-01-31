@@ -1,6 +1,4 @@
-⚠️ **NOT PRODUCTION READY** ⚠️
-
-# AI Wrapper
+⚠️ # AI Wrapper
 
 ## Overview
 A flexible PHP wrapper for integrating multiple AI services.
