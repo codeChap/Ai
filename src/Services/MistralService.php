@@ -9,7 +9,7 @@ use codechap\ai\Traits\PropertyAccessTrait;
 use codechap\ai\Curl;
 use codechap\ai\Traits\HeadersTrait;
 
-class MistralService extends AbstractAIService 
+class MistralService extends AbstractAiService 
 {
     use AiServiceTrait;
     use HeadersTrait;
