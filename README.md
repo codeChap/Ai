@@ -1,3 +1,5 @@
+⚠️ **NOT PRODUCTION READY** ⚠️
+
 # AI Wrapper
 
 ## Overview
@@ -13,7 +15,7 @@ A flexible PHP wrapper for integrating multiple AI services.
 
 
 ## Requirements
-- PHP 8.3+
+- PHP 8.2+
 - Composer
 
 ## Installation
