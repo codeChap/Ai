@@ -18,7 +18,7 @@ A flexible PHP wrapper for integrating multiple AI services.
 
 ## Installation
 ```bash
-composer require codechap/aiwrapper
+composer require codechap/ai
 ```
 
 ## Basic Usage
@@ -58,7 +58,7 @@ print "\n\n";
 $openai = new ai('openai', $openaiKey);
 print $openai
     ->set('temperature', 0)
-    ->set('model', 'gpt-4o-mini')
+    ->set('model', 'o3-mini-2025-01-31')
     ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
     ->set('stream', false)
     ->query("What is the capital of South Africa?")

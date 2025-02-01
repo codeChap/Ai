@@ -20,7 +20,7 @@ class OpenAiService extends AbstractAiService
 
     protected string $systemPrompt = 'You are a helpful assistant.';
 
-    protected string $model            = 'gpt-4o-mini';
+    protected string $model            = 'o3-mini-2025-01-31';
     protected ?float $frequencyPenalty = null;
     protected ?array $logitBias        = null;
     protected ?int $maxTokens          = null;
