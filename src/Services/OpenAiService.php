@@ -35,7 +35,7 @@ class OpenAiService extends AbstractAiService
     protected ?array $tools            = null;
     protected ?float $topP             = null;
     protected ?string $user            = null;
-
+    protected ?bool $json               = false;
     protected $curl;
 
     public function __construct(string $apiKey, string $url = 'https://api.openai.com/v1/')
@@ -57,7 +57,12 @@ class OpenAiService extends AbstractAiService
             'max_tokens'        => $this->maxTokens,
             'n'                 => $this->n,
             'presence_penalty'  => $this->presencePenalty,
-            'response_format'   => $this->responseFormat,
+            'response_format'   => $this->responseFormat 
+                                   ? $this->responseFormat 
+                                   : (is_array($this->json) 
+                                         ? $this->json 
+                                         : ($this->json === true ? ['type' => 'json_object'] : null)
+                                     ),
             'seed'              => $this->seed,
             'stop'              => $this->stop,
             'stream'            => $this->stream,
@@ -65,7 +70,7 @@ class OpenAiService extends AbstractAiService
             'tool_choice'       => $this->toolChoice,
             'tools'             => $this->tools,
             'top_p'             => $this->topP,
-            'user'              => $this->user
+            'user'              => $this->user,
         ], function($value) {
             return !is_null($value);
         });

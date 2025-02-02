@@ -11,6 +11,20 @@ $openaiKey = file_get_contents(realpath(__DIR__ . '/..') . '/OPENAI-API-KEY.txt'
 $anthropicKey = file_get_contents(realpath(__DIR__ . '/..') . '/ANTHROPIC-API-KEY.txt');
 $mistralKey = file_get_contents(realpath(__DIR__ . '/..') . '/MISTRAL-API-KEY.txt');
 
+
+// OpenAI Test
+print "### OpenAI Test ### \n";
+$openai = new ai('openai', $openaiKey);
+print $openai
+    ->set('temperature', 0)
+    ->set('model', 'gpt-4o-mini')
+    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+    ->set('json', true)
+    ->query("What is the capital of South Africa? Only return the three in a JSON response.")
+    ->one()
+    ;
+print "\n\n";
+
 // Anthropic Test
 print "### Anthropic Test ### \n";
 $anthropic = new ai('anthropic', $anthropicKey);
@@ -50,18 +64,7 @@ print $mistral
     ;
 print "\n\n";
 
-// OpenAI Test
-print "### OpenAI Test ### \n";
-$openai = new ai('openai', $openaiKey);
-print $openai
-    ->set('temperature', 0)
-    ->set('model', 'gpt-4o-mini')
-    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
-    ->set('stream', false)
-    ->query("What is the capital of South Africa?")
-    ->one()
-    ;
-print "\n\n";
+
 
 // xAI Test
 print "### xAI Test ### \n";

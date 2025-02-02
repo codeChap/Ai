@@ -3,13 +3,13 @@
 ## Overview
 A flexible PHP wrapper for integrating multiple AI services.
 
-| Service   | Chat | Streaming | Functions/Tools | Computer Vision | Prompt Caching | PDF support  |
-|-----------|------|-----------|-----------------|-----------------|----------------|--------------|
-| Anthropic | ✓    | ✕         | ✕               | ✕               | ✕              | ✕            |
-| Groq      | ✓    | ✕         | ✕               | ✕               | ✕              | ✕            |
-| Mistral   | ✓    | ✕         | ✕               | ✕               | ✕              | ✕            |
-| OpenAI    | ✓    | ✕         | ✕               | ✕               | ✕              | ✕            |
-| xAI       | ✓    | ✕         | ✕               | ✕               | ✕              | ✕            |
+| Service   | Chat | Streaming | Tools | Vision | Caching | PDF | JSON |
+|-----------|------|-----------|-------|--------|---------|-----|------|
+| Anthropic | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✕    |
+| Groq      | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✕    |
+| Mistral   | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✕    |
+| OpenAI    | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✓    |
+| xAI       | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✕    |
 
 
 ## Requirements
@@ -31,10 +31,10 @@ use codechap\ai\ai;
 $mistral = new ai('mistral', $mistralKey);
 print $mistral
     ->set('temperature', 0)
-    ->set('model', 'mistral-large-latest')
+    ->set('model', 'o3-mini-2025-01-31')
     ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
-    ->set('stream', false)
-    ->query("What is the capital of South Africa?")
+    ->set('json', true)
+    ->query("What is the capital of South Africa? Only return the three in a JSON response.")
     ->one()
     ;
 ```
