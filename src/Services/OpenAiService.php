@@ -35,7 +35,8 @@ class OpenAiService extends AbstractAiService
     protected ?array $tools            = null;
     protected ?float $topP             = null;
     protected ?string $user            = null;
-    protected ?bool $json               = false;
+    protected ?bool $json              = false;
+    protected ?string $reasoningEffort = null;
     protected $curl;
 
     public function __construct(string $apiKey, string $url = 'https://api.openai.com/v1/')
@@ -71,6 +72,7 @@ class OpenAiService extends AbstractAiService
             'tools'             => $this->tools,
             'top_p'             => $this->topP,
             'user'              => $this->user,
+            'reasoning_effort'  => $this->reasoningEffort
         ], function($value) {
             return !is_null($value);
         });
