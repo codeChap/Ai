@@ -17,7 +17,7 @@ print "### OpenAI Test ### \n";
 $openai = new ai('openai', $openaiKey);
 print $openai
     ->set('temperature', 0)
-    ->set('model', 'gpt-4o-mini')
+    ->set('model', 'o3-mini-2025-01-31')
     ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
     ->set('json', true)
     ->query("What is the capital of South Africa? Only return the three in a JSON response.")

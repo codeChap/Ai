@@ -23,11 +23,23 @@ composer require codechap/ai
 
 ## Basic Usage
 
+```php
+// OpenAI
+use codechap\ai\ai;
+$openai = new ai('openai', $openaiKey);
+print $openai
+    ->set('temperature', 0)
+    ->set('model', 'o3-mini-2025-01-31')
+    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+    ->set('json', true)
+    ->query("What is the capital of South Africa? Only return the three in a JSON response.")
+    ->one()
+    ;
+```
 
 ```php
-use codechap\ai\ai;
-
 // Mistral
+use codechap\ai\ai;
 $mistral = new ai('mistral', $mistralKey);
 print $mistral
     ->set('temperature', 0)
@@ -41,6 +53,7 @@ print $mistral
 
 ```php
 // Groq
+use codechap\ai\ai;
 $groq = new ai('groq', $groqKey);
 print $groq
     ->set('temperature', 0)
@@ -54,20 +67,8 @@ print "\n\n";
 ```
 
 ```php
-// OpenAI
-$openai = new ai('openai', $openaiKey);
-print $openai
-    ->set('temperature', 0)
-    ->set('model', 'o3-mini-2025-01-31')
-    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
-    ->set('stream', false)
-    ->query("What is the capital of South Africa?")
-    ->one()
-    ;
-```
-
-```php
 // Anthropic
+use codechap\ai\ai;
 $anthropic = new ai('anthropic', $anthropicKey);
 print $anthropic
     ->set('temperature', 0)
@@ -81,6 +82,7 @@ print $anthropic
 
 ```php
 // xAI
+use codechap\ai\ai;
 $xai = new ai('xai', $xaiKey);
 print $xai
     ->set('temperature', 0)
