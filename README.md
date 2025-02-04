@@ -95,6 +95,38 @@ print $xai
     ;
 ```
 
+## JSON Response Handling
+
+Different AI services handle JSON responses in different ways:
+
+### OpenAI
+- Uses native JSON response formatting via the `response_format` parameter
+- Set `json: true` to automatically receive properly formatted JSON responses
+- No additional processing needed
+
+### Other Services (Anthropic, Mistral, Groq, xAI)
+- JSON responses are handled through post-processing
+- Set `json: true` to enable JSON extraction and validation
+- Uses the JsonExtractor helper to:
+  - Extract JSON from raw responses
+  - Handle JSON within markdown code blocks (```json ... ```)
+  - Validate JSON structure
+
+Example usage:
+```php
+// OpenAI (native JSON)
+$ai->openai()
+   ->set('json', true)
+   ->query('Return user data')
+   ->one();
+
+// Other services (post-processed JSON)
+$ai->anthropic() // or mistral(), groq(), xai()
+   ->set('json', true)
+   ->query('Return user data')
+   ->one();
+```
+
 ## Contributing
 
  - Todo

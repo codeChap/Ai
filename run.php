@@ -55,7 +55,7 @@ $result = $mistral
     ->all()
     ;
 print_r(json_decode($result[0], true));
-print "\n\n"; die();
+print "\n\n";
 
 // Anthropic Test
 print "### Anthropic Test ### \n";
@@ -85,8 +85,6 @@ print $openai
     ->one()
     ;
 print "\n\n";
-
-
 
 // Mistral Test
 print "### Mistral Test ### \n";
