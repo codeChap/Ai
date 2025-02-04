@@ -1,7 +1,7 @@
-# AI Wrapper
+# AI Service Integration Library
 
 ## Overview
-A flexible PHP wrapper for integrating multiple AI services.
+A PHP library that provides a unified interface for interacting with multiple AI services (OpenAI, Anthropic, Mistral, Groq, xAI). Simplifies integration and standardizes interactions across different AI providers while maintaining service-specific features.
 
 | Service   | Chat | Streaming | Tools | Vision | Caching | PDF | JSON |
 |-----------|------|-----------|-------|--------|---------|-----|------|
