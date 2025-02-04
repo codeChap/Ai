@@ -29,6 +29,7 @@ class MistralService extends AbstractAiService
     protected ?array $tools       = null;
     protected ?array $stop        = null;
     protected ?string $randomSeed = null;
+    protected ?bool $json         = false;
 
     protected $curl;
 
@@ -73,7 +74,7 @@ class MistralService extends AbstractAiService
     {
         $response = $this->curl->getResponse();
         if(isset($response['choices'][0]['message']['content'])) {
-            return $response['choices'][0]['message']['content'];
+            return $this->extractFirstResponse($response);
         }
         return '';
     }
@@ -83,10 +84,46 @@ class MistralService extends AbstractAiService
         $response = $this->curl->getResponse();
         $content = [];
         if(isset($response['choices'][0]['message']['content'])) {
-            foreach($response['choices'] as $choice) {
-                $content[] = $choice['message']['content'];
-            }
+            $content = $this->extractAllResponses($response);
         }
         return $content;
+    }
+
+    protected function extractFirstResponse(array $response): string
+    {
+        $text = $response['choices'][0]['message']['content'] ?? '';
+        if ($this->json) {
+            $extracted = \codechap\ai\Helpers\JsonExtractor::extract($text);
+            if ($extracted === null) {
+                throw new \RuntimeException('Response does not contain valid JSON.');
+            }
+            try {
+                return json_encode($extracted, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                throw new \RuntimeException('Failed to encode JSON: ' . $e->getMessage());
+            }
+        }
+        return $text;
+    }
+
+    protected function extractAllResponses(array $response): array
+    {
+        if ($this->json) {
+            $results = [];
+            foreach ($response['choices'] as $choice) {
+                $text = $choice['message']['content'] ?? '';
+                $extracted = \codechap\ai\Helpers\JsonExtractor::extract($text);
+                if ($extracted === null) {
+                    throw new \RuntimeException('One of the responses does not contain valid JSON.');
+                }
+                try {
+                    $results[] = json_encode($extracted, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    throw new \RuntimeException('Failed to encode JSON: ' . $e->getMessage());
+                }
+            }
+            return $results;
+        }
+        return $response['choices'] ?? [];
     }
 }

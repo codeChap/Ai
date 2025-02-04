@@ -36,7 +36,7 @@ class AnthropicService extends AbstractAiService
     protected ?float $topP = null;
     protected ?float $topK = null;
     protected ?string $user = null;
-
+    protected ?bool $json = false;
     /**
      * Constructor
      *
@@ -88,7 +88,7 @@ class AnthropicService extends AbstractAiService
             'top_p'       => $this->topP,
             'top_k'       => $this->topK,
             'stop'        => $this->stop,
-            'user'        => $this->user
+            'user'        => $this->user,
         ], fn($value) => !is_null($value));
     }
 
@@ -142,11 +142,39 @@ class AnthropicService extends AbstractAiService
 
     protected function extractFirstResponse(array $response): string
     {
-        return $response['content'][0]['text'] ?? '';
+        $text = $response['content'][0]['text'] ?? '';
+        if ($this->json) {
+            $extracted = \codechap\ai\Helpers\JsonExtractor::extract($text);
+            if ($extracted === null) {
+                throw new \RuntimeException('Response does not contain valid JSON.');
+            }
+            try {
+                return json_encode($extracted, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                throw new \RuntimeException('Failed to encode JSON: ' . $e->getMessage());
+            }
+        }
+        return $text;
     }
 
     protected function extractAllResponses(array $response): array
     {
+        if ($this->json) {
+            $results = [];
+            foreach ($response['content'] ?? [] as $content) {
+                $text = $content['text'] ?? '';
+                $extracted = \codechap\ai\Helpers\JsonExtractor::extract($text);
+                if ($extracted === null) {
+                    throw new \RuntimeException('One of the responses does not contain valid JSON.');
+                }
+                try {
+                    $results[] = json_encode($extracted, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    throw new \RuntimeException('Failed to encode JSON: ' . $e->getMessage());
+                }
+            }
+            return $results;
+        }
         return $response['content'] ?? [];
     }
 }

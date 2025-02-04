@@ -39,6 +39,7 @@ class XaiService extends AbstractAiService
     protected ?int $topLogprobs        = null;
     protected ?float $topP             = null;
     protected ?string $user            = null;
+    protected ?bool $json             = false;
 
     protected $curl;
 
@@ -86,5 +87,57 @@ class XaiService extends AbstractAiService
         $this->curl = new Curl();
         $this->curl->post($data, $headers, $url);
         return $this;
+    }
+
+    public function one(): string
+    {
+        $response = $this->curl->getResponse();
+        return $this->extractFirstResponse($response);
+    }
+
+    public function all(): array
+    {
+        $response = $this->curl->getResponse();
+        return $this->extractAllResponses($response);
+    }
+
+    protected function extractFirstResponse(array $response): string
+    {
+        $text = $response['choices'][0]['message']['content'] ?? '';
+        if ($this->json) {
+            $extracted = \codechap\ai\Helpers\JsonExtractor::extract($text);
+            if ($extracted === null) {
+                throw new \RuntimeException('Response does not contain valid JSON.');
+            }
+            try {
+                return json_encode($extracted, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                throw new \RuntimeException('Failed to encode JSON: ' . $e->getMessage());
+            }
+        }
+        return $text;
+    }
+
+    protected function extractAllResponses(array $response): array
+    {
+        if ($this->json) {
+            $results = [];
+            foreach ($response['choices'] ?? [] as $choice) {
+                $text = $choice['message']['content'] ?? '';
+                $extracted = \codechap\ai\Helpers\JsonExtractor::extract($text);
+                if ($extracted === null) {
+                    throw new \RuntimeException('One of the responses does not contain valid JSON.');
+                }
+                try {
+                    $results[] = json_encode($extracted, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    throw new \RuntimeException('Failed to encode JSON: ' . $e->getMessage());
+                }
+            }
+            return $results;
+        }
+        return array_map(function($choice) {
+            return $choice['message']['content'] ?? '';
+        }, $response['choices'] ?? []);
     }
 }

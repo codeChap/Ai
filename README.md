@@ -5,11 +5,11 @@ A flexible PHP wrapper for integrating multiple AI services.
 
 | Service   | Chat | Streaming | Tools | Vision | Caching | PDF | JSON |
 |-----------|------|-----------|-------|--------|---------|-----|------|
-| Anthropic | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✕    |
-| Groq      | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✕    |
-| Mistral   | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✕    |
+| Anthropic | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✓    |
+| Groq      | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✓    |
+| Mistral   | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✓    |
 | OpenAI    | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✓    |
-| xAI       | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✕    |
+| xAI       | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✓    |
 
 
 ## Requirements
