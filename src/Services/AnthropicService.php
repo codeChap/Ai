@@ -12,8 +12,8 @@ use codechap\ai\Curl;
 class AnthropicService extends AbstractAiService 
 {
     private const DEFAULT_API_URL = 'https://api.anthropic.com/v1/';
-    private const API_VERSION = '2023-06-01';
-    private const CHAT_ENDPOINT = 'messages';
+    private const API_VERSION     = '2023-06-01';
+    private const CHAT_ENDPOINT   = 'messages';
 
     /**
      * API Configuration

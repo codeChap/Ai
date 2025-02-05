@@ -11,6 +11,24 @@ $openaiKey = file_get_contents(realpath(__DIR__ . '/../../') . '/OPENAI-API-KEY.
 $anthropicKey = file_get_contents(realpath(__DIR__ . '/../../') . '/ANTHROPIC-API-KEY.txt');
 $mistralKey = file_get_contents(realpath(__DIR__ . '/../../') . '/MISTRAL-API-KEY.txt');
 
+
+// Anthropic Test
+print "### Anthropic Test ### \n";
+$anthropic = new ai('anthropic', $anthropicKey);
+$result = $anthropic
+    ->set('temperature', 0)
+    ->set('model', 'claude-3-5-sonnet-20241022')
+    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+    ->set('stream', false)
+    ->set('json', true)
+    ->query("What is the capital of South Africa? Only return the three in a JSON response.")
+    ->all()
+    ;
+print_r(json_decode($result[0], true));
+print "\n\n";
+
+die();
+
 // Groq Test
 print "### Groq Test ### \n";
 $groq = new ai('groq', $groqKey);
@@ -57,20 +75,7 @@ $result = $mistral
 print_r(json_decode($result[0], true));
 print "\n\n";
 
-// Anthropic Test
-print "### Anthropic Test ### \n";
-$anthropic = new ai('anthropic', $anthropicKey);
-$result = $anthropic
-    ->set('temperature', 0)
-    ->set('model', 'claude-3-5-sonnet-20241022')
-    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
-    ->set('stream', false)
-    ->set('json', true)
-    ->query("What is the capital of South Africa? Only return the three in a JSON response.")
-    ->all()
-    ;
-print_r(json_decode($result[0], true));
-print "\n\n";
+
 
 // OpenAI Test
 print "### OpenAI Test ### \n";
