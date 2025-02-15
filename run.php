@@ -70,7 +70,7 @@ print_r($result);
 print "\n\n";
 
 
-
+die();
 
 
 // Anthropic Test

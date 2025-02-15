@@ -86,7 +86,7 @@ abstract class AbstractAIService implements ServiceInterface
      *
      * @return string
      */
-    public function one(): string
+    public function one(): array | string
     {
         $response = $this->curl->getResponse();
         return $this->extractFirstResponse($response);
