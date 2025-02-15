@@ -89,7 +89,7 @@ class XaiService extends AbstractAiService
         return $this;
     }
 
-    public function one(): string
+    public function one(): array | string
     {
         $response = $this->curl->getResponse();
         return $this->extractFirstResponse($response);
