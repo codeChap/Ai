@@ -5,11 +5,72 @@ require __DIR__ . '/vendor/autoload.php';
 use codechap\ai\ai;
 
 //Get the API Key
-$xaiKey = file_get_contents(realpath(__DIR__ . '/../../') . '/X-API-KEY.txt');
+$xaiKey = file_get_contents(realpath(__DIR__ . '/../../') . '/XAI-API-KEY.txt');
 $groqKey = file_get_contents(realpath(__DIR__ . '/../../') . '/GROQ-API-KEY.txt');
 $openaiKey = file_get_contents(realpath(__DIR__ . '/../../') . '/OPENAI-API-KEY.txt');
 $anthropicKey = file_get_contents(realpath(__DIR__ . '/../../') . '/ANTHROPIC-API-KEY.txt');
 $mistralKey = file_get_contents(realpath(__DIR__ . '/../../') . '/MISTRAL-API-KEY.txt');
+
+$toolsDefinition = [
+    [
+        "type" => "function",
+        "function" => [
+            "name" => "get_current_temperature",
+            "description" => "Get the current temperature in a given location",
+            "parameters" => [
+                "type" => "object",
+                "properties" => [
+                    "location" => [
+                        "type" => "string",
+                        "description" => "The city and state, e.g. San Francisco, CA"
+                    ],
+                    "unit" => [
+                        "type" => "string",
+                        "enum" => ["celsius", "fahrenheit"],
+                        "default" => "celsius"
+                    ]
+                ],
+                "required" => ["location"]
+            ]
+        ]
+    ],
+    [
+        "type" => "function",
+        "function" => [
+            "name" => "get_current_ceiling",
+            "description" => "Get the current cloud ceiling in a given location",
+            "parameters" => [
+                "type" => "object",
+                "properties" => [
+                    "location" => [
+                        "type" => "string",
+                        "description" => "The city and state, e.g. San Francisco, CA"
+                    ]
+                ],
+                "required" => ["location"]
+            ]
+        ]
+    ]
+];
+
+// xAI Test
+print "### xAI Test ### \n";
+$xai = new ai('xai', $xaiKey);
+$result = $xai
+    ->set('temperature', 0)
+    ->set('model', 'grok-2-latest')
+    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+    ->set('stream', false)
+    ->set('json', true)
+    ->set('tools', $toolsDefinition)
+    ->query("What is the Temperature in Johannesburg, South Africa?")
+    ->all()
+    ;
+print_r($result);
+print "\n\n";
+
+
+
 
 
 // Anthropic Test
@@ -24,10 +85,6 @@ $result = $anthropic
     ->query("What is the capital of South Africa? Only return the three in a JSON response.")
     ->all()
     ;
-print_r(json_decode($result[0], true));
-print "\n\n";
-
-die();
 
 // Groq Test
 print "### Groq Test ### \n";
@@ -44,20 +101,7 @@ $result = $groq
 print_r(json_decode($result[0], true));
 print "\n\n";
 
-// xAI Test
-print "### xAI Test ### \n";
-$xai = new ai('xai', $xaiKey);
-$result = $xai
-    ->set('temperature', 0)
-    ->set('model', 'grok-2-latest')
-    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
-    ->set('stream', false)
-    ->set('json', true)
-    ->query("What is the capital of South Africa? Only return the three in a JSON response.")
-    ->all()
-    ;
-print_r(json_decode($result[0], true));
-print "\n\n";
+
 
 
 // Mistral Test

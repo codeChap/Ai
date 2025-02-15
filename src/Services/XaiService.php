@@ -57,8 +57,6 @@ class XaiService extends AbstractAiService
         $data = array_filter([
             'messages'          => $messages,
             'model'             => $this->model,
-            'stream'            => $this->stream,
-            'temperature'       => $this->temperature,
             'deferred'          => $this->deferred,
             'frequency_penalty' => $this->frequencyPenalty,
             'logit_bias'        => $this->logitBias,
@@ -69,7 +67,9 @@ class XaiService extends AbstractAiService
             'response_format'   => $this->responseFormat,
             'seed'              => $this->seed,
             'stop'              => $this->stop,
+            'stream'            => $this->stream,
             'stream_options'    => $this->streamOptions,
+            'temperature'       => $this->temperature,
             'tool_choice'       => $this->toolChoice,
             'tools'             => $this->tools,
             'top_logprobs'      => $this->topLogprobs,
@@ -101,8 +101,12 @@ class XaiService extends AbstractAiService
         return $this->extractAllResponses($response);
     }
 
-    protected function extractFirstResponse(array $response): string
+    protected function extractFirstResponse(array $response): string|array
     {
+        if (isset($response['choices'][0]['message']['tool_calls'])) {
+            return $this->handleToolCalls($response['choices'][0]['message']['tool_calls']);
+        }
+
         $text = $response['choices'][0]['message']['content'] ?? '';
         if ($this->json) {
             $extracted = \codechap\ai\Helpers\JsonExtractor::extract($text);
@@ -120,6 +124,11 @@ class XaiService extends AbstractAiService
 
     protected function extractAllResponses(array $response): array
     {
+        if (isset($response['choices'][0]['message']['tool_calls'])) {
+            // For now, we'll only handle tool calls from the first choice
+            return [$this->handleToolCalls($response['choices'][0]['message']['tool_calls'])];
+        }
+
         if ($this->json) {
             $results = [];
             foreach ($response['choices'] ?? [] as $choice) {
@@ -139,5 +148,21 @@ class XaiService extends AbstractAiService
         return array_map(function($choice) {
             return $choice['message']['content'] ?? '';
         }, $response['choices'] ?? []);
+    }
+
+    protected function handleToolCalls(array $toolCalls): array
+    {
+        $results = [];
+        foreach ($toolCalls as $call) {
+            $results[] = [
+                'id' => $call['id'],
+                'type' => $call['type'],
+                'function' => [
+                    'name' => $call['function']['name'],
+                    'arguments' => json_decode($call['function']['arguments'], true)
+                ]
+            ];
+        }
+        return $results;
     }
 }

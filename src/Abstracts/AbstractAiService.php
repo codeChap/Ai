@@ -110,7 +110,7 @@ abstract class AbstractAIService implements ServiceInterface
      * @param array $response
      * @return string
      */
-    protected function extractFirstResponse(array $response): string
+    protected function extractFirstResponse(array $response): string | array
     {
         return $response['choices'][0]['message']['content'] ?? '';
     }
