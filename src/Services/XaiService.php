@@ -104,7 +104,7 @@ class XaiService extends AbstractAiService
     protected function extractFirstResponse(array $response): string|array
     {
         if (isset($response['choices'][0]['message']['tool_calls'])) {
-            return $this->handleToolCalls($response['choices'][0]['message']['tool_calls']);
+            return $this->handleToolCalls($response['choices'][0]['message']['tool_calls'])[0];
         }
 
         $text = $response['choices'][0]['message']['content'] ?? '';
