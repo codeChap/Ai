@@ -23,7 +23,7 @@ interface ServiceInterface
      *
      * @return string The first/primary response from the AI
      */
-    public function one(): string;
+    public function one(): array | string;
 
     /**
      * Gets all responses from the AI service.
