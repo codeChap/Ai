@@ -53,6 +53,24 @@ $toolsDefinition = [
     ]
 ];
 
+// Anthropic Test
+print "### Anthropic Test ### \n";
+$anthropic = new ai('anthropic', $anthropicKey);
+$result = $anthropic
+    ->set('temperature', 0)
+    ->set('model', 'claude-3-7-sonnet-20250219')
+    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+    ->set('stream', false)
+    ->set('json', true)
+    ->query("What is the capital of South Africa? Only return the three in a JSON response.")
+    ->all()
+    ;
+print_r($result);
+print "\n\n";
+
+die();
+
+
 // xAI Test
 print "### xAI Test ### \n";
 $xai = new ai('xai', $xaiKey);
@@ -68,23 +86,6 @@ $result = $xai
     ;
 print_r($result);
 print "\n\n";
-
-
-die();
-
-
-// Anthropic Test
-print "### Anthropic Test ### \n";
-$anthropic = new ai('anthropic', $anthropicKey);
-$result = $anthropic
-    ->set('temperature', 0)
-    ->set('model', 'claude-3-5-sonnet-20241022')
-    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
-    ->set('stream', false)
-    ->set('json', true)
-    ->query("What is the capital of South Africa? Only return the three in a JSON response.")
-    ->all()
-    ;
 
 // Groq Test
 print "### Groq Test ### \n";
