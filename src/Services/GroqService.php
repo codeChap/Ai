@@ -2,14 +2,13 @@
 
 namespace codechap\ai\Services;
 
-use codechap\ai\Interfaces\ServiceInterface;
 use codechap\ai\Abstracts\AbstractAiService;
 use codechap\ai\Traits\AiServiceTrait;
 use codechap\ai\Traits\PropertyAccessTrait;
-use codechap\ai\Curl;
 use codechap\ai\Traits\HeadersTrait;
+use codechap\ai\Curl;
 
-class GroqService extends AbstractAiService 
+class GroqService extends AbstractAiService
 {
     use AiServiceTrait;
     use HeadersTrait;
@@ -63,7 +62,7 @@ class GroqService extends AbstractAiService
 
         $this->curl = new Curl();
         $this->curl->post($data, $headers, $url);
-        
+
         return $this;
     }
 

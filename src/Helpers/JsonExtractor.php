@@ -10,7 +10,7 @@ class JsonExtractor
      * @param string $string
      * @return mixed|null The decoded JSON structure, or null if extraction/decoding fails.
      */
-    public static function extract(string $string)
+    public static function extract(string $string) : ?array
     {
         $string = trim($string);
         $result = self::findOutermostJson($string);
@@ -82,4 +82,4 @@ class JsonExtractor
             ? substr($str, $start, $end - $start + 1)
             : null;
     }
-} 
+}

@@ -2,14 +2,13 @@
 
 namespace codechap\ai\Services;
 
-use codechap\ai\Interfaces\ServiceInterface;
 use codechap\ai\Abstracts\AbstractAiService;
 use codechap\ai\Traits\AiServiceTrait;
 use codechap\ai\Traits\PropertyAccessTrait;
-use codechap\ai\Curl;
 use codechap\ai\Traits\HeadersTrait;
+use codechap\ai\Curl;
 
-class OpenAiService extends AbstractAiService 
+class OpenAiService extends AbstractAiService
 {
     use AiServiceTrait;
     use HeadersTrait;
@@ -58,10 +57,10 @@ class OpenAiService extends AbstractAiService
             'max_tokens'        => $this->maxTokens,
             'n'                 => $this->n,
             'presence_penalty'  => $this->presencePenalty,
-            'response_format'   => $this->responseFormat 
-                                   ? $this->responseFormat 
-                                   : (is_array($this->json) 
-                                         ? $this->json 
+            'response_format'   => $this->responseFormat
+                                   ? $this->responseFormat
+                                   : (is_array($this->json)
+                                         ? $this->json
                                          : ($this->json === true ? ['type' => 'json_object'] : null)
                                      ),
             'seed'              => $this->seed,
@@ -81,7 +80,7 @@ class OpenAiService extends AbstractAiService
             'Authorization' => "Bearer " . trim($this->apiKey),
             'OpenAI-Beta'   => 'assistants=v1'
         ]);
-        
+
         $url = $this->baseUrl . 'chat/completions';
 
         $this->curl = new Curl();

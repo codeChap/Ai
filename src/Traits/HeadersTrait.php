@@ -46,6 +46,9 @@ trait HeadersTrait
 
     /**
      * Convert associative array headers to proper cURL header format
+     *
+     * @param array $headers The headers to format
+     * @return array The formatted headers
      */
     protected function formatHeaders(array $headers): array
     {
@@ -55,4 +58,4 @@ trait HeadersTrait
         }
         return $curlHeaders;
     }
-} 
+}

@@ -2,18 +2,21 @@
 
 namespace codechap\ai\Services;
 
-use codechap\ai\Interfaces\ServiceInterface;
 use codechap\ai\Abstracts\AbstractAiService;
-use codechap\ai\Traits\AIServiceTrait;
+use codechap\ai\Traits\AiServiceTrait;
 use codechap\ai\Traits\PropertyAccessTrait;
 use codechap\ai\Traits\HeadersTrait;
 use codechap\ai\Curl;
 
-class AnthropicService extends AbstractAiService 
+class AnthropicService extends AbstractAiService
 {
     private const DEFAULT_API_URL = 'https://api.anthropic.com/v1/';
     private const API_VERSION     = '2023-06-01';
     private const CHAT_ENDPOINT   = 'messages';
+
+    use AiServiceTrait;
+    use PropertyAccessTrait;
+    use HeadersTrait;
 
     /**
      * API Configuration
@@ -44,7 +47,7 @@ class AnthropicService extends AbstractAiService
      * @param string $url Base URL for the API
      * @throws \InvalidArgumentException if API key is empty
      */
-    public function __construct(string $apiKey, string $url = self::DEFAULT_API_URL) 
+    public function __construct(string $apiKey, string $url = self::DEFAULT_API_URL)
     {
         parent::__construct($apiKey, $url);
     }
@@ -59,13 +62,13 @@ class AnthropicService extends AbstractAiService
     public function query(string|array $prompts): self
     {
         $this->validatePrompts($prompts);
-        
+
         $messages = $this->formatMessages($prompts);
         $data = $this->prepareRequestData($messages);
         $headers = $this->prepareHeaders();
-        
+
         $this->sendRequest($data, $headers);
-        
+
         return $this;
     }
 

@@ -2,14 +2,13 @@
 
 namespace codechap\ai\Services;
 
-use codechap\ai\Interfaces\ServiceInterface;
 use codechap\ai\Abstracts\AbstractAiService;
 use codechap\ai\Traits\AiServiceTrait;
 use codechap\ai\Traits\PropertyAccessTrait;
-use codechap\ai\Curl;
 use codechap\ai\Traits\HeadersTrait;
+use codechap\ai\Curl;
 
-class XaiService extends AbstractAiService 
+class XaiService extends AbstractAiService
 {
     use AiServiceTrait;
     use HeadersTrait;
@@ -39,7 +38,7 @@ class XaiService extends AbstractAiService
     protected ?int $topLogprobs        = null;
     protected ?float $topP             = null;
     protected ?string $user            = null;
-    protected ?bool $json             = false;
+    protected ?bool $json              = false;
 
     protected $curl;
 
@@ -48,6 +47,12 @@ class XaiService extends AbstractAiService
         parent::__construct($apiKey, $url);
     }
 
+    /**
+     * Set the query parameters for the request
+     *
+     * @param string|array $prompts The prompts to query
+     * @return self The current instance
+     */
     public function query(string|array $prompts): self
     {
         $this->validatePrompts($prompts);
@@ -89,6 +94,7 @@ class XaiService extends AbstractAiService
         return $this;
     }
 
+
     public function one(): array | string
     {
         $response = $this->curl->getResponse();
@@ -101,6 +107,12 @@ class XaiService extends AbstractAiService
         return $this->extractAllResponses($response);
     }
 
+    /**
+     * Extract the first response from the API response
+     *
+     * @param array $response The API response
+     * @return string|array The first response
+     */
     protected function extractFirstResponse(array $response): string|array
     {
         if (isset($response['choices'][0]['message']['tool_calls'])) {
@@ -122,6 +134,12 @@ class XaiService extends AbstractAiService
         return $text;
     }
 
+    /**
+     * Extract all responses from the API response
+     *
+     * @param array $response The API response
+     * @return array The extracted responses
+     */
     protected function extractAllResponses(array $response): array
     {
         if (isset($response['choices'][0]['message']['tool_calls'])) {
@@ -150,6 +168,12 @@ class XaiService extends AbstractAiService
         }, $response['choices'] ?? []);
     }
 
+    /**
+     * Handle tool calls from the API response
+     *
+     * @param array $toolCalls The tool calls from the API response
+     * @return array The extracted tool calls
+     */
     protected function handleToolCalls(array $toolCalls): array
     {
         $results = [];

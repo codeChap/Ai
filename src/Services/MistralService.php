@@ -2,14 +2,13 @@
 
 namespace codechap\ai\Services;
 
-use codechap\ai\Interfaces\ServiceInterface;
 use codechap\ai\Abstracts\AbstractAiService;
 use codechap\ai\Traits\AiServiceTrait;
 use codechap\ai\Traits\PropertyAccessTrait;
-use codechap\ai\Curl;
 use codechap\ai\Traits\HeadersTrait;
+use codechap\ai\Curl;
 
-class MistralService extends AbstractAiService 
+class MistralService extends AbstractAiService
 {
     use AiServiceTrait;
     use HeadersTrait;
@@ -62,7 +61,7 @@ class MistralService extends AbstractAiService
         $headers = $this->getHeaders([
             'Authorization' => "Bearer " . trim($this->apiKey)
         ]);
-        
+
         $url = $this->baseUrl . 'chat/completions';
 
         $this->curl = new Curl();

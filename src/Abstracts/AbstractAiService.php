@@ -6,9 +6,8 @@ use codechap\ai\Interfaces\ServiceInterface;
 use codechap\ai\Traits\AiServiceTrait;
 use codechap\ai\Traits\HeadersTrait;
 use codechap\ai\Traits\PropertyAccessTrait;
-use codechap\ai\Curl;
 
-abstract class AbstractAIService implements ServiceInterface
+abstract class AbstractAiService implements ServiceInterface
 {
     use AiServiceTrait;
     use HeadersTrait;
@@ -175,4 +174,4 @@ abstract class AbstractAIService implements ServiceInterface
      * @return self
      */
     abstract public function query(string|array $prompts): self;
-} 
+}

@@ -4,6 +4,13 @@ namespace codechap\ai\Traits;
 
 trait AiServiceTrait
 {
+    /**
+     * Format messages for the AI service.
+     *
+     * @param string|array $prompt The prompt to format
+     * @param string|bool $systemMessage The system message to include
+     * @return array The formatted messages
+     */
     protected function formatMessages(string|array $prompt, string|bool $systemMessage = false): array
     {
         $messages = [];
@@ -39,4 +46,4 @@ trait AiServiceTrait
 
         return $messages;
     }
-} 
+}

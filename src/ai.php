@@ -7,6 +7,7 @@ namespace codechap\ai;
 use codechap\ai\Interfaces\ServiceInterface;
 
 class ai {
+
     private ServiceInterface $service;
     private static $serviceRegistry = [];
 
