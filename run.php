@@ -68,9 +68,6 @@ $result = $anthropic
 print_r($result);
 print "\n\n";
 
-die();
-
-
 // xAI Test
 print "### xAI Test ### \n";
 $xai = new ai('xai', $xaiKey);
@@ -127,10 +124,10 @@ print "### OpenAI Test ### \n";
 $openai = new ai('openai', $openaiKey);
 print $openai
     ->set('temperature', 0)
-    ->set('model', 'o3-mini-2025-01-31')
+    ->set('model', 'gpt-4.5-preview-2025-02-27')
     ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
     ->set('json', true)
-    ->set('reasoningEffort', 'low')
+    //->set('reasoningEffort', 'low')
     ->query("What is the capital of South Africa? Only return the three in a JSON response.")
     ->one()
     ;

@@ -12,17 +12,23 @@ class Curl {
     private array $content;
     private $curl;
 
+    /**
+     * @param $data
+     * @param $headers
+     * @param $url
+     * @return $this
+     */
     public function post(array $data, array $headers, string $url): self {
         $this->initializeCurl();
         $this->content = [];
 
         $isStreaming = $data['stream'] ?? false;
         $headers = $this->prepareHeaders($headers);
-        
+
         $this->setCurlOptions($url, $isStreaming, $headers, $this->prepareData($data));
 
-        return $isStreaming ? 
-            $this->handleStreamingResponse() : 
+        return $isStreaming ?
+            $this->handleStreamingResponse() :
             $this->handleStandardResponse();
     }
 
@@ -33,6 +39,12 @@ class Curl {
         }
     }
 
+    /**
+     * Prepare headers for cURL request
+     *
+     * @param $headers
+     * @return array
+     */
     private function prepareHeaders(array $headers): array {
         $headers = array_map('trim', $headers);
         if (!$this->hasContentTypeHeader($headers)) {
@@ -41,6 +53,12 @@ class Curl {
         return $headers;
     }
 
+    /**
+     * Prepare data for cURL request
+     *
+     * @param $data
+     * @return string
+     */
     private function prepareData(array $data): string {
         $jsonData = json_encode(array_filter($data));
         if ($jsonData === false) {
@@ -49,6 +67,14 @@ class Curl {
         return $jsonData;
     }
 
+    /**
+     * Set cURL options for request
+     *
+     * @param $url
+     * @param $isStreaming
+     * @param $headers
+     * @param $jsonData
+     */
     private function setCurlOptions(string $url, bool $isStreaming, array $headers, string $jsonData): void {
         curl_setopt_array($this->curl, [
             CURLOPT_URL => $url,
@@ -63,6 +89,13 @@ class Curl {
         }
     }
 
+    /**
+     * Handle streaming data from cURL request
+     *
+     * @param $curl
+     * @param string $data
+     * @return int
+     */
     private function handleStreamingData($curl, string $data): int {
         $cleanData = str_replace('data: ', '', $data);
         if (trim($cleanData)) {
@@ -80,6 +113,11 @@ class Curl {
         return strlen($data);
     }
 
+    /**
+     * Handle streaming response from cURL request
+     *
+     * @return self
+     */
     private function handleStreamingResponse(): self {
         $this->executeRequest();
         $this->response = [
@@ -90,16 +128,26 @@ class Curl {
         return $this;
     }
 
+    /**
+     * Handle standard response from cURL request
+     *
+     * @return self
+     */
     private function handleStandardResponse(): self {
         $response = $this->executeRequest();
         $this->response = json_decode($response, true);
         return $this;
     }
 
+    /**
+     * Execute cURL request and handle response
+     *
+     * @return self
+     */
     private function executeRequest(): ?string {
         $response = curl_exec($this->curl);
         $httpCode = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
-        
+
         if ($response === false) {
             $error = curl_error($this->curl);
             curl_close($this->curl);
@@ -117,6 +165,12 @@ class Curl {
         return $response;
     }
 
+    /**
+     * Check if the response has a Content-Type header
+     *
+     * @param array $headers The response headers
+     * @return bool True if the response has a Content-Type header, false otherwise
+     */
     private function hasContentTypeHeader(array $headers): bool
     {
         foreach ($headers as $header) {
@@ -129,7 +183,7 @@ class Curl {
 
     /**
      * Get the response data
-     * 
+     *
      * @return array The response data
      */
     public function getResponse(): array

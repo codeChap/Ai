@@ -5,12 +5,6 @@ declare(strict_types=1);
 namespace codechap\ai;
 
 use codechap\ai\Interfaces\ServiceInterface;
-use codechap\ai\Services\AnthropicService;
-use codechap\ai\Services\ExampleService;
-use codechap\ai\Services\GroqService;
-use codechap\ai\Services\MistralService;
-use codechap\ai\Services\OpenAiService;
-use codechap\ai\Services\XaiService;
 
 class ai {
     private ServiceInterface $service;
@@ -76,16 +70,6 @@ class ai {
      */
     public function query(string|array $prompt): ServiceInterface {
         return $this->service->query($prompt);
-    }
-
-    /**
-     * Gets the content of the result.
-     *
-     * @return string The content of the result
-     */
-    public function content(): string
-    {
-        return $this->service->content();
     }
 
     /**
