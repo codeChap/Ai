@@ -69,6 +69,33 @@ class MistralService extends AbstractAiService
         return $this;
     }
 
+    /**
+     * Get a list of available models.
+     * @param string $column The $column name to retrieve
+     * @return array
+     */
+    public function models($column = false) : array
+    {
+        $headers = $this->getHeaders([
+            'Authorization' => "Bearer " . trim($this->apiKey)
+        ]);
+
+        $url = $this->baseUrl . 'models';
+
+        $this->curl = new Curl();
+        $this->curl->post([], $headers, $url);
+        $response = $this->curl->getResponse();
+
+        if(!empty($response['data'])) {
+            if($column){
+                return array_column($response['data'], $column);
+            }
+            return $response['data'];
+        }
+
+        throw new \Exception('Failed to retrieve models');
+    }
+
     public function one() : string
     {
         $response = $this->curl->getResponse();

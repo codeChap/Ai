@@ -18,7 +18,7 @@ class Curl {
      * @param $url
      * @return $this
      */
-    public function post(array $data, array $headers, string $url): self {
+    public function post(array $data = [], array $headers, string $url): self {
         $this->initializeCurl();
         $this->content = [];
 
@@ -59,12 +59,15 @@ class Curl {
      * @param $data
      * @return string
      */
-    private function prepareData(array $data): string {
-        $jsonData = json_encode(array_filter($data));
-        if ($jsonData === false) {
-            throw new \RuntimeException('Failed to encode JSON: ' . json_last_error_msg());
+    private function prepareData(array $data): string | false {
+        if(!empty($data)) {
+            $jsonData = json_encode(array_filter($data));
+            if ($jsonData === false) {
+                throw new \RuntimeException('Failed to encode JSON: ' . json_last_error_msg());
+            }
+            return $jsonData;
         }
-        return $jsonData;
+        return false;
     }
 
     /**
@@ -76,13 +79,13 @@ class Curl {
      * @param $jsonData
      */
     private function setCurlOptions(string $url, bool $isStreaming, array $headers, string $jsonData): void {
-        curl_setopt_array($this->curl, [
-            CURLOPT_URL => $url,
+        curl_setopt_array($this->curl, array_filter([
+            CURLOPT_URL            => $url,
             CURLOPT_RETURNTRANSFER => !$isStreaming,
-            CURLOPT_POST => true,
-            CURLOPT_HTTPHEADER => $this->formatHeaders($headers),
-            CURLOPT_POSTFIELDS => $jsonData
-        ]);
+            CURLOPT_POST           => $jsonData ? true : false,
+            CURLOPT_HTTPHEADER     => $this->formatHeaders($headers),
+            CURLOPT_POSTFIELDS     => $jsonData ? $jsonData : null
+        ]));
 
         if ($isStreaming) {
             curl_setopt($this->curl, CURLOPT_WRITEFUNCTION, [$this, 'handleStreamingData']);
@@ -97,7 +100,7 @@ class Curl {
      * @return int
      */
     private function handleStreamingData($curl, string $data): int {
-        $cleanData = str_replace('data: ', '', $data);
+        $cleanData = str_replace('d:ata: ', '', $data);
         if (trim($cleanData)) {
             try {
                 $jsonData = json_decode($cleanData, true);

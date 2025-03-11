@@ -73,6 +73,18 @@ class AnthropicService extends AbstractAiService
     }
 
     /**
+     * Get a list of models.
+     *
+     * @todo Implement this method.
+     * @param string $column The column to sort by.
+     * @return array
+     */
+    public function models($column = false) : array
+    {
+        return [];
+    }
+
+    /**
      * Prepare the request data
      *
      * @param array $messages

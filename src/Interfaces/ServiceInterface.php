@@ -4,7 +4,7 @@ namespace codechap\ai\Interfaces;
 
 /**
  * Interface AIServiceInterface
- * 
+ *
  * Defines the contract for AI service implementations that handle query operations.
  * This interface ensures consistent query functionality across different AI services.
  */
@@ -50,4 +50,12 @@ interface ServiceInterface
      * @throws \Exception If the property doesn't exist
      */
     public function set(string $name, mixed $value): self;
-} 
+
+    /**
+     * Gets the models available for the AI service.
+     *
+     * @param string $column The column to sort by.
+     * @return array Array of models available for the AI service
+     */
+    public function models($column = false): array;
+}

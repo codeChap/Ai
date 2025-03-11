@@ -73,6 +73,10 @@ class ai {
         return $this->service->query($prompt);
     }
 
+    public function models(): array {
+        return $this->service->models();
+    }
+
     /**
      * Get a specific property from the service
      *

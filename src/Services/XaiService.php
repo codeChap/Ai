@@ -94,6 +94,17 @@ class XaiService extends AbstractAiService
         return $this;
     }
 
+    /**
+     * Get a list of models.
+     *
+     * @todo Implement this method.
+     * @param string $column The column to sort by.
+     * @return array
+     */
+    public function models($column = false) : array
+    {
+        return [];
+    }
 
     public function one(): array | string
     {
