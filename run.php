@@ -2,7 +2,7 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-use codechap\ai\ai;
+use codechap\ai\Ai;
 
 //Get the API Key
 $xaiKey = file_get_contents(realpath(__DIR__ . '/../../') . '/XAI-API-KEY.txt');
@@ -55,7 +55,7 @@ $toolsDefinition = [
 
 // Anthropic Test
 print "### Anthropic Test ### \n";
-$anthropic = new ai('anthropic', $anthropicKey);
+$anthropic = new Ai('anthropic', $anthropicKey);
 $result = $anthropic
     ->set('temperature', 0)
     ->set('model', 'claude-3-7-sonnet-20250219')
@@ -70,7 +70,7 @@ print "\n\n";
 
 // xAI Test
 print "### xAI Test ### \n";
-$xai = new ai('xai', $xaiKey);
+$xai = new Ai('xai', $xaiKey);
 $result = $xai
     ->set('temperature', 0)
     ->set('model', 'grok-2-latest')
@@ -86,7 +86,7 @@ print "\n\n";
 
 // Groq Test
 print "### Groq Test ### \n";
-$groq = new ai('groq', $groqKey);
+$groq = new Ai('groq', $groqKey);
 $result = $groq
     ->set('temperature', 0)
     ->set('model', 'deepseek-r1-distill-llama-70b')
@@ -104,7 +104,7 @@ print "\n\n";
 
 // Mistral Test
 print "### Mistral Test ### \n";
-$mistral = new ai('mistral', $mistralKey);
+$mistral = new Ai('mistral', $mistralKey);
 $result = $mistral
     ->set('temperature', 0)
     ->set('model', 'mistral-large-latest')
@@ -121,7 +121,7 @@ print "\n\n";
 
 // OpenAI Test
 print "### OpenAI Test ### \n";
-$openai = new ai('openai', $openaiKey);
+$openai = new Ai('openai', $openaiKey);
 print $openai
     ->set('temperature', 0)
     ->set('model', 'gpt-4.5-preview-2025-02-27')
@@ -135,7 +135,7 @@ print "\n\n";
 
 // Mistral Test
 print "### Mistral Test ### \n";
-$mistral = new ai('mistral', $mistralKey);
+$mistral = new Ai('mistral', $mistralKey);
 print $mistral
     ->set('temperature', 0)
     ->set('model', 'mistral-large-latest')
