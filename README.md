@@ -25,7 +25,7 @@ composer require codechap/ai
 
 ```php
 // OpenAI
-use codechap\ai\ai;
+use codechap\ai\Ai;
 $openai = new ai('openai', $openaiKey);
 print $openai
     ->set('temperature', 0)
@@ -40,8 +40,8 @@ print $openai
 
 ```php
 // Mistral
-use codechap\ai\ai;
-$mistral = new ai('mistral', $mistralKey);
+use codechap\ai\Ai;
+$mistral = new Ai('mistral', $mistralKey);
 print $mistral
     ->set('temperature', 0)
     ->set('model', 'o3-mini-2025-01-31')
@@ -54,8 +54,8 @@ print $mistral
 
 ```php
 // Groq
-use codechap\ai\ai;
-$groq = new ai('groq', $groqKey);
+use codechap\ai\Ai;
+$groq = new Ai('groq', $groqKey);
 print $groq
     ->set('temperature', 0)
     ->set('model', 'deepseek-r1-distill-llama-70b')
@@ -69,8 +69,8 @@ print "\n\n";
 
 ```php
 // Anthropic
-use codechap\ai\ai;
-$anthropic = new ai('anthropic', $anthropicKey);
+use codechap\ai\Ai;
+$anthropic = new Ai('anthropic', $anthropicKey);
 print $anthropic
     ->set('temperature', 0)
     ->set('model', 'claude-3-5-sonnet-20241022')
@@ -83,8 +83,8 @@ print $anthropic
 
 ```php
 // xAI
-use codechap\ai\ai;
-$xai = new ai('xai', $xaiKey);
+use codechap\ai\Ai;
+$xai = new Ai('xai', $xaiKey);
 print $xai
     ->set('temperature', 0)
     ->set('model', 'grok-2-latest')

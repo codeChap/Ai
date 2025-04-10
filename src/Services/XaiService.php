@@ -19,7 +19,7 @@ class XaiService extends AbstractAiService
 
     protected string $systemPrompt = 'You are a helpful assistant.';
 
-    protected string $model            = 'grok-2-latest';
+    protected string $model            = 'grok-3-latest';
     protected ?bool $deferred          = null;
     protected ?float $frequencyPenalty = null;
     protected ?array $logitBias        = null;
