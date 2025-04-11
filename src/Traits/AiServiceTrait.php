@@ -15,7 +15,7 @@ trait AiServiceTrait
     {
         $messages = [];
 
-        if($systemMessage) {
+        if(is_string($systemMessage)) {
             $messages[] = [
                 'role' => 'system',
                 'content' => $systemMessage
@@ -33,17 +33,12 @@ trait AiServiceTrait
 
         // If prompt is an array, append all messages
         foreach ($prompt as $message) {
-
             if(!isset($message['role']) || !isset($message['content'])) {
                 throw new \Exception("Invalid message format: 'role' and 'content' are required.");
             }
-
-            $messages[] = [
-                'role' => $message['role'],
-                'content' => $message['content']
-            ];
+            $messages[] = $message;
         }
 
-        return $messages;
+        return $prompt;
     }
 }

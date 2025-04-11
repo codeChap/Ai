@@ -53,6 +53,40 @@ $toolsDefinition = [
     ]
 ];
 
+// Groq Test
+print "### Groq Test ### \n";
+$groq = new Ai('groq', $groqKey);
+$result = $groq
+    ->set('temperature', 0)
+    ->set('model', 'meta-llama/llama-4-scout-17b-16e-instruct')
+    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+    ->set('stream', false)
+    ->set('json', false)
+    ->query(
+    [
+        [
+            'role' => 'user',
+            'content' => [
+                [
+                    'type' => 'image_url',
+                    'image_url' => [
+                        'url' => 'https://upload.wikimedia.org/wikipedia/commons/f/f2/LPU-v1-die.jpg'
+                    ]
+                ],
+                [
+                    'type' => 'text',
+                    'text' => 'What is this image about?'
+                ]
+            ]
+        ]
+    ])
+    ->all()
+    ;
+print_r($result);
+print "\n\n";
+
+die();
+
 // Anthropic Test
 print "### Anthropic Test ### \n";
 $anthropic = new Ai('anthropic', $anthropicKey);
@@ -82,21 +116,6 @@ $result = $xai
     ->all()
     ;
 print_r($result);
-print "\n\n";
-
-// Groq Test
-print "### Groq Test ### \n";
-$groq = new Ai('groq', $groqKey);
-$result = $groq
-    ->set('temperature', 0)
-    ->set('model', 'deepseek-r1-distill-llama-70b')
-    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
-    ->set('stream', false)
-    ->set('json', true)
-    ->query("What is the capital of South Africa? Only return the three in a JSON response.")
-    ->all()
-    ;
-print_r(json_decode($result[0], true));
 print "\n\n";
 
 
