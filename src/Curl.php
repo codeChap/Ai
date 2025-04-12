@@ -3,6 +3,7 @@
 namespace codechap\ai;
 
 use codechap\ai\Traits\HeadersTrait;
+use codechap\ai\Exceptions\ResponseException;
 
 class Curl {
 
@@ -154,13 +155,13 @@ class Curl {
         if ($response === false) {
             $error = curl_error($this->curl);
             curl_close($this->curl);
-            throw new \RuntimeException("cURL error: $error");
+            throw new ResponseException("cURL error: $error");
         }
 
         curl_close($this->curl);
 
         if ($httpCode !== 200) {
-            throw new \RuntimeException(
+            throw new ResponseException(
                 "HTTP error: $httpCode" . ($response ? ", Response: $response" : '')
             );
         }
