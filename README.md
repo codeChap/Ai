@@ -112,7 +112,8 @@ print = $google
 ```
 
 ## Vision Example
-// Groq Vision
+
+```php
 $groq = new Ai('groq', $groqKey);
 $result = $groq
     ->set('temperature', 0)
@@ -141,6 +142,7 @@ $result = $groq
     ->all()
     ;
 print_r($result);
+```
 
 ## JSON Response Handling
 

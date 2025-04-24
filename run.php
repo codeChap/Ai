@@ -100,8 +100,6 @@ $result = $groq
 print_r($result);
 print "\n\n";
 
-die();
-
 // Anthropic Test
 print "### Anthropic Test ### \n";
 $anthropic = new Ai('anthropic', $anthropicKey);
