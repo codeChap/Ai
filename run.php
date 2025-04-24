@@ -10,6 +10,7 @@ $groqKey = file_get_contents(realpath(__DIR__ . '/../../') . '/GROQ-API-KEY.txt'
 $openaiKey = file_get_contents(realpath(__DIR__ . '/../../') . '/OPENAI-API-KEY.txt');
 $anthropicKey = file_get_contents(realpath(__DIR__ . '/../../') . '/ANTHROPIC-API-KEY.txt');
 $mistralKey = file_get_contents(realpath(__DIR__ . '/../../') . '/MISTRAL-API-KEY.txt');
+$googleKey = file_get_contents(realpath(__DIR__ . '/../../') . '/GOOGLE-API-KEY.txt');
 
 $toolsDefinition = [
     [
@@ -52,6 +53,21 @@ $toolsDefinition = [
         ]
     ]
 ];
+
+
+// Google Test
+print "### Google Test ### \n";
+$mistral = new Ai('google', $googleKey);
+$result = $mistral
+    ->set('temperature', 0)
+    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+    ->set('stream', false)
+    ->set('json', true)
+    ->query("What is the capital of South Africa? Only return the three in a JSON response.")
+    ->all()
+    ;
+print_r(json_decode($result[0], true));
+print "\n\n";
 
 // Groq Test
 print "### Groq Test ### \n";
