@@ -54,7 +54,6 @@ $toolsDefinition = [
     ]
 ];
 
-
 // Google Test
 print "### Google Test ### \n";
 $mistral = new Ai('google', $googleKey);

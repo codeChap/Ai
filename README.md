@@ -3,6 +3,8 @@
 ## Overview
 A PHP library that provides a unified interface for interacting with multiple AI services (OpenAI, Anthropic, Mistral, Groq, xAI). Simplifies integration and standardizes interactions across different AI providers while maintaining service-specific features.
 
+## Implementations
+
 | Service   | Chat | Streaming | Tools | Vision | Caching | PDF | JSON |
 |-----------|------|-----------|-------|--------|---------|-----|------|
 | Anthropic | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✓    |
@@ -10,7 +12,7 @@ A PHP library that provides a unified interface for interacting with multiple AI
 | Mistral   | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✓    |
 | OpenAI    | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✓    |
 | xAI       | ✓    | ✕         | ✓     | ✕      | ✕       | ✕   | ✓    |
-
+| Google    | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✓    |
 
 ## Requirements
 - PHP 8.2+
@@ -23,8 +25,8 @@ composer require codechap/ai
 
 ## Basic Usage
 
+### OpenAI
 ```php
-// OpenAI
 use codechap\ai\Ai;
 $openai = new ai('openai', $openaiKey);
 print $openai
@@ -38,8 +40,8 @@ print $openai
     ;
 ```
 
+### Mistral
 ```php
-// Mistral
 use codechap\ai\Ai;
 $mistral = new Ai('mistral', $mistralKey);
 print $mistral
@@ -52,8 +54,8 @@ print $mistral
     ;
 ```
 
+### Groq (Most open source models)
 ```php
-// Groq
 use codechap\ai\Ai;
 $groq = new Ai('groq', $groqKey);
 print $groq
@@ -67,8 +69,8 @@ print $groq
 print "\n\n";
 ```
 
+### Anthropic (Claude)
 ```php
-// Anthropic
 use codechap\ai\Ai;
 $anthropic = new Ai('anthropic', $anthropicKey);
 print $anthropic
@@ -81,8 +83,8 @@ print $anthropic
     ;
 ```
 
+### xAI (Grok)
 ```php
-// xAI
 use codechap\ai\Ai;
 $xai = new Ai('xai', $xaiKey);
 print $xai
@@ -92,6 +94,20 @@ print $xai
     ->set('stream', false)
     ->query("What is the capital of South Africa?")
     ->one()
+    ;
+```
+
+### Google (Gemini)
+```php
+use codechap\ai\Ai;
+$google = new Ai('google', $googleKey);
+print = $google
+    ->set('temperature', 0)
+    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+    ->set('stream', false)
+    ->set('json', true)
+    ->query("What is the capital of South Africa? Only return the three in a JSON response.")
+    ->all()
     ;
 ```
 
