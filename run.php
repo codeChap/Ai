@@ -54,6 +54,24 @@ $toolsDefinition = [
     ]
 ];
 
+// xAI Test
+print "### xAI Test ### \n";
+$xai = new Ai('xai', $xaiKey);
+$result = $xai
+    ->set('temperature', 0)
+    ->set('model', 'grok-2-latest')
+    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+    ->set('stream', false)
+    ->set('json', true)
+    ->set('tools', $toolsDefinition)
+    ->query("What is the Temperature in Johannesburg, South Africa?")
+    ->all()
+    ;
+print_r($result);
+print "\n\n";
+
+die();
+
 // Google Test
 print "### Google Test ### \n";
 $mistral = new Ai('google', $googleKey);

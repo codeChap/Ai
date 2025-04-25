@@ -23,6 +23,14 @@ class Ai {
             throw new \InvalidArgumentException("API key cannot be empty");
         }
 
+        // Check if the provided serviceType contains any capital letters
+        if (preg_match('/[A-Z]/', $serviceType)) {
+            // Warn the user if capitals are found, as service types are case-insensitive internally
+            trigger_error("Service type '{$serviceType}' contains capital letters and has been automatically converted to lowercase.", E_USER_WARNING);
+            // Convert the local serviceType variable to lowercase for registry lookup and internal use
+            $serviceType = strtolower($serviceType);
+        }
+
         $this->loadServices();
 
         if (!isset(self::$serviceRegistry[$serviceType])) {

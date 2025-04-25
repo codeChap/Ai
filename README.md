@@ -11,7 +11,7 @@ A PHP library that provides a unified interface for interacting with multiple AI
 | Groq      | ✓    | ✕         | ✕     | ✓      | ✕       | ✕   | ✓    |
 | Mistral   | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✓    |
 | OpenAI    | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✓    |
-| xAI       | ✓    | ✕         | ✓     | ✕      | ✕       | ✕   | ✓    |
+| xAI       | ✓    | ✕         | ✓     | ✓      | ✕       | ✕   | ✓    |
 | Google    | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✓    |
 
 ## Requirements
