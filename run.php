@@ -54,12 +54,28 @@ $toolsDefinition = [
     ]
 ];
 
+// xAI basic test
+print "### xAI Test ### \n";
+$xai = new Ai('xai', $xaiKey);
+$result = $xai
+    ->set('temperature', 0)
+    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+    ->set('stream', false)
+    ->set('json', false)
+    ->query("What are the capitals of South Africa? Only give me the capitals.")
+    ->all()
+    ;
+print_r($result);
+print "\n\n";
+
+die();
+
 // xAI Test
 print "### xAI Test ### \n";
 $xai = new Ai('xai', $xaiKey);
 $result = $xai
     ->set('temperature', 0)
-    ->set('model', 'grok-2-latest')
+    ->set('model', 'grok-4')
     ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
     ->set('stream', false)
     ->set('json', true)
