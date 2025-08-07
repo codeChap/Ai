@@ -54,8 +54,23 @@ $toolsDefinition = [
     ]
 ];
 
-// xAI basic test
-print "### xAI Test ### \n";
+// xAI Search Test
+print "### xAI Search Test ### \n";
+$xai = new Ai('xai', $xaiKey);
+$result = $xai
+    ->set('temperature', 0)
+    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+    ->set('stream', false)
+    ->set('json', false)
+    ->set('searchParameters', ['mode' => 'on', 'return_citations' => true])
+    ->query("What is this trend about on x: Sydney Sweeney has great jeans?")
+    ->all()
+    ;
+print_r($result);
+print "\n\n";
+
+// xAI Basic Test
+print "### xAI Basic Test ### \n";
 $xai = new Ai('xai', $xaiKey);
 $result = $xai
     ->set('temperature', 0)
@@ -68,10 +83,8 @@ $result = $xai
 print_r($result);
 print "\n\n";
 
-die();
-
-// xAI Test
-print "### xAI Test ### \n";
+// xAI Function Calling Test
+print "### xAI Function Calling Test ### \n";
 $xai = new Ai('xai', $xaiKey);
 $result = $xai
     ->set('temperature', 0)
@@ -86,12 +99,10 @@ $result = $xai
 print_r($result);
 print "\n\n";
 
-die();
-
 // Google Test
 print "### Google Test ### \n";
-$mistral = new Ai('google', $googleKey);
-$result = $mistral
+$google = new Ai('google', $googleKey);
+$result = $google
     ->set('temperature', 0)
     ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
     ->set('stream', false)
@@ -107,7 +118,7 @@ print "### Groq Test ### \n";
 $groq = new Ai('groq', $groqKey);
 $result = $groq
     ->set('temperature', 0)
-    ->set('model', 'meta-llama/llama-4-scout-17b-16e-instruct')
+    ->set('model', 'llama-3.2-90b-vision-preview')
     ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
     ->set('stream', false)
     ->set('json', false)
@@ -139,7 +150,7 @@ print "### Anthropic Test ### \n";
 $anthropic = new Ai('anthropic', $anthropicKey);
 $result = $anthropic
     ->set('temperature', 0)
-    ->set('model', 'claude-3-7-sonnet-20250219')
+    ->set('model', 'claude-3-5-sonnet-20241022')
     ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
     ->set('stream', false)
     ->set('json', true)
@@ -148,25 +159,6 @@ $result = $anthropic
     ;
 print_r($result);
 print "\n\n";
-
-// xAI Test
-print "### xAI Test ### \n";
-$xai = new Ai('xai', $xaiKey);
-$result = $xai
-    ->set('temperature', 0)
-    ->set('model', 'grok-2-latest')
-    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
-    ->set('stream', false)
-    ->set('json', true)
-    ->set('tools', $toolsDefinition)
-    ->query("What is the Temperature in Johannesburg, South Africa?")
-    ->all()
-    ;
-print_r($result);
-print "\n\n";
-
-
-
 
 // Mistral Test
 print "### Mistral Test ### \n";
@@ -183,24 +175,21 @@ $result = $mistral
 print_r(json_decode($result[0], true));
 print "\n\n";
 
-
-
 // OpenAI Test
 print "### OpenAI Test ### \n";
 $openai = new Ai('openai', $openaiKey);
 print $openai
     ->set('temperature', 0)
-    ->set('model', 'gpt-4.5-preview-2025-02-27')
+    ->set('model', 'gpt-4o')
     ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
     ->set('json', true)
-    //->set('reasoningEffort', 'low')
     ->query("What is the capital of South Africa? Only return the three in a JSON response.")
     ->one()
     ;
 print "\n\n";
 
-// Mistral Test
-print "### Mistral Test ### \n";
+// Mistral Basic Test
+print "### Mistral Basic Test ### \n";
 $mistral = new Ai('mistral', $mistralKey);
 print $mistral
     ->set('temperature', 0)

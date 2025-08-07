@@ -5,13 +5,11 @@ namespace codechap\ai\Abstracts;
 use codechap\ai\Interfaces\ServiceInterface;
 use codechap\ai\Traits\AiServiceTrait;
 use codechap\ai\Traits\HeadersTrait;
-use codechap\ai\Traits\PropertyAccessTrait;
 
 abstract class AbstractAiService implements ServiceInterface
 {
     use AiServiceTrait;
     use HeadersTrait;
-    use PropertyAccessTrait;
 
     /**
      * HTTP Client
@@ -134,37 +132,7 @@ abstract class AbstractAiService implements ServiceInterface
         return $content;
     }
 
-    /**
-     * Gets the value of a property
-     *
-     * @param string $name The name of the property
-     * @return mixed The value of the property
-     * @throws \Exception If the property doesn't exist
-     */
-    public function get(string $name)
-    {
-        if (property_exists($this, $name)) {
-            return $this->$name;
-        }
-        throw new \Exception("Property $name does not exist");
-    }
 
-    /**
-     * Sets the value of a property
-     *
-     * @param string $name The name of the property
-     * @param mixed $value The value to set
-     * @return self Returns the current instance for method chaining
-     * @throws \Exception If the property doesn't exist
-     */
-    public function set(string $name, mixed $value): self
-    {
-        if (property_exists($this, $name)) {
-            $this->$name = $value;
-            return $this;
-        }
-        throw new \Exception("Property $name does not exist");
-    }
 
     /**
      * Send a query to the AI service

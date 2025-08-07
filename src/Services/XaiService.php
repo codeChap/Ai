@@ -14,11 +14,6 @@ class XaiService extends AbstractAiService
     use HeadersTrait;
     use PropertyAccessTrait;
 
-    protected string $apiKey;
-    protected string $baseUrl;
-
-    protected string $systemPrompt = 'You are a helpful assistant.';
-
     protected string $model            = 'grok-4';
     protected ?bool $deferred          = null;
     protected ?float $frequencyPenalty = null;
@@ -39,6 +34,7 @@ class XaiService extends AbstractAiService
     protected ?float $topP             = null;
     protected ?string $user            = null;
     protected ?bool $json              = false;
+    protected ?array $searchParameters = null;
 
     protected $curl;
 
@@ -79,10 +75,9 @@ class XaiService extends AbstractAiService
             'tools'             => $this->tools,
             'top_logprobs'      => $this->topLogprobs,
             'top_p'             => $this->topP,
-            'user'              => $this->user
-        ], function($value) {
-            return !is_null($value);
-        });
+            'user'              => $this->user,
+            'search_parameters' => $this->searchParameters
+        ], fn($value) => !is_null($value));
 
         $headers = $this->getHeaders([
             'Authorization' => "Bearer " . trim($this->apiKey),
@@ -131,6 +126,16 @@ class XaiService extends AbstractAiService
         }
 
         $text = $response['choices'][0]['message']['content'] ?? '';
+        
+        // If citations are present, return both content and citations
+        if (isset($response['citations']) && !empty($response['citations'])) {
+            return [
+                'content' => $text,
+                'citations' => $response['citations'],
+                'num_sources_used' => $response['usage']['num_sources_used'] ?? null
+            ];
+        }
+        
         if ($this->json) {
             $extracted = \codechap\ai\Helpers\JsonExtractor::extract($text);
             if ($extracted === null) {
@@ -158,6 +163,20 @@ class XaiService extends AbstractAiService
             return [$this->handleToolCalls($response['choices'][0]['message']['tool_calls'])];
         }
 
+        // If citations are present, return structured data with citations
+        if (isset($response['citations']) && !empty($response['citations'])) {
+            $results = [];
+            foreach ($response['choices'] ?? [] as $choice) {
+                $text = $choice['message']['content'] ?? '';
+                $results[] = [
+                    'content' => $text,
+                    'citations' => $response['citations'],
+                    'num_sources_used' => $response['usage']['num_sources_used'] ?? null
+                ];
+            }
+            return $results;
+        }
+
         if ($this->json) {
             $results = [];
             foreach ($response['choices'] ?? [] as $choice) {
@@ -174,9 +193,7 @@ class XaiService extends AbstractAiService
             }
             return $results;
         }
-        return array_map(function($choice) {
-            return $choice['message']['content'] ?? '';
-        }, $response['choices'] ?? []);
+        return array_map(fn($choice) => $choice['message']['content'] ?? '', $response['choices'] ?? []);
     }
 
     /**
