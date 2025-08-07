@@ -5,14 +5,14 @@ A PHP library that provides a unified interface for interacting with multiple AI
 
 ## Implementations
 
-| Service   | Chat | Streaming | Tools | Vision | Caching | PDF | JSON |
-|-----------|------|-----------|-------|--------|---------|-----|------|
-| Anthropic | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✓    |
-| Groq      | ✓    | ✕         | ✕     | ✓      | ✕       | ✕   | ✓    |
-| Mistral   | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✓    |
-| OpenAI    | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✓    |
-| xAI       | ✓    | ✕         | ✓     | ✓      | ✕       | ✕   | ✓    |
-| Google    | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✓    |
+| Service   | Chat | Streaming | Tools | Vision | Caching | PDF | JSON | Live Search
+|-----------|------|-----------|-------|--------|---------|-----|------| -----------
+| Anthropic | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✓    | ✕
+| Groq      | ✓    | ✕         | ✕     | ✓      | ✕       | ✕   | ✓    | ✕
+| Mistral   | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✓    | ✕
+| OpenAI    | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✓    | ✕
+| xAI       | ✓    | ✕         | ✓     | ✓      | ✕       | ✕   | ✓    | ✓
+| Google    | ✓    | ✕         | ✕     | ✕      | ✕       | ✕   | ✓    | ✕
 
 ## Requirements
 - PHP 8.2+
