@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use codechap\ai\ai;
+use codechap\ai\Ai;
 
 class GroqServiceTest extends TestCase {
     public function testGroqServiceQuery() {
@@ -12,7 +12,7 @@ class GroqServiceTest extends TestCase {
         }
         $groqKey = trim(file_get_contents($groqKeyPath));
 
-        $groq = new ai('groq', $groqKey);
+        $groq = new Ai('groq', $groqKey);
 
         $result = $groq
             ->set('temperature', 0)

@@ -36,8 +36,6 @@ class XaiService extends AbstractAiService
     protected ?bool $json              = false;
     protected ?array $searchParameters = null;
 
-    protected $curl;
-
     public function __construct(string $apiKey, string $url = 'https://api.x.ai/v1/')
     {
         parent::__construct($apiKey, $url);

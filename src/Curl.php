@@ -14,10 +14,14 @@ class Curl {
     private $curl;
 
     /**
-     * @param $data
-     * @param $headers
-     * @param $url
-     * @return $this
+     * Execute a POST request to the specified URL
+     *
+     * @param array $data The data to send in the request body
+     * @param array $headers The HTTP headers to include
+     * @param string $url The URL to send the request to
+     * @return self Returns the current instance for method chaining
+     * @throws \RuntimeException If cURL initialization or JSON encoding fails
+     * @throws \codechap\ai\Exceptions\ResponseException If the HTTP request fails
      */
     public function post(array $data = [], array $headers, string $url): self {
         $this->initializeCurl();
@@ -101,7 +105,7 @@ class Curl {
      * @return int
      */
     private function handleStreamingData($curl, string $data): int {
-        $cleanData = str_replace('d:ata: ', '', $data);
+        $cleanData = str_replace('data: ', '', $data);
         if (trim($cleanData)) {
             try {
                 $jsonData = json_decode($cleanData, true);

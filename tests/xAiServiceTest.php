@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use codechap\ai\ai;
+use codechap\ai\Ai;
 
 class xAiServiceTest extends TestCase {
     public function testxAiServiceQuery() {
@@ -12,7 +12,7 @@ class xAiServiceTest extends TestCase {
         }
         $xaiKey = trim(file_get_contents($xaiKeyPath));
 
-        $xai = new ai('xai', $xaiKey);
+        $xai = new Ai('xai', $xaiKey);
 
         $result = $xai
             ->set('temperature', 0)

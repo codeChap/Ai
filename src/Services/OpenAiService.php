@@ -36,7 +36,6 @@ class OpenAiService extends AbstractAiService
     protected ?string $user            = null;
     protected ?bool $json              = false;
     protected ?string $reasoningEffort = null;
-    protected $curl;
 
     public function __construct(string $apiKey, string $url = 'https://api.openai.com/v1/')
     {
@@ -72,9 +71,7 @@ class OpenAiService extends AbstractAiService
             'top_p'             => $this->topP,
             'user'              => $this->user,
             'reasoning_effort'  => $this->reasoningEffort
-        ], function($value) {
-            return !is_null($value);
-        });
+        ], fn($value) => !is_null($value));
 
         $headers = $this->getHeaders([
             'Authorization' => "Bearer " . trim($this->apiKey),
@@ -100,13 +97,10 @@ class OpenAiService extends AbstractAiService
         return [];
     }
 
-    public function one() : string
+    public function one() : array | string
     {
         $response = $this->curl->getResponse();
-        if(isset($response['choices'][0]['message']['content'])) {
-            return $response['choices'][0]['message']['content'];
-        }
-        return '';
+        return $this->extractFirstResponse($response);
     }
 
     public function all() : array

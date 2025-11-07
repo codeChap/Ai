@@ -15,13 +15,16 @@ interface ServiceInterface
      *
      * @param string|array $prompts The prompt(s) to send to the AI service
      * @return self Returns the current instance for method chaining
+     * @throws \InvalidArgumentException If prompts are empty or invalid
+     * @throws \codechap\ai\Exceptions\ResponseException If the API request fails
      */
     public function query(string|array $prompts): self;
 
     /**
      * Gets a single response from the AI service.
      *
-     * @return string The first/primary response from the AI
+     * @return array|string The first/primary response from the AI
+     * @throws \RuntimeException If JSON parsing fails (when JSON mode is enabled)
      */
     public function one(): array | string;
 
@@ -29,6 +32,7 @@ interface ServiceInterface
      * Gets all responses from the AI service.
      *
      * @return array Array of all responses from the AI
+     * @throws \RuntimeException If JSON parsing fails (when JSON mode is enabled)
      */
     public function all(): array;
 
@@ -37,7 +41,7 @@ interface ServiceInterface
      *
      * @param string $name The name of the property
      * @return mixed The value of the property
-     * @throws \Exception If the property doesn't exist
+     * @throws \InvalidArgumentException If the property doesn't exist
      */
     public function get(string $name);
 
@@ -47,7 +51,7 @@ interface ServiceInterface
      * @param string $name The name of the property
      * @param mixed $value The value to set
      * @return self Returns the current instance for method chaining
-     * @throws \Exception If the property doesn't exist
+     * @throws \InvalidArgumentException If the property doesn't exist
      */
     public function set(string $name, mixed $value): self;
 

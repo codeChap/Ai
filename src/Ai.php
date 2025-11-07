@@ -11,6 +11,13 @@ class Ai {
     private ServiceInterface $service;
     private static $serviceRegistry = [];
 
+    /**
+     * Constructor
+     *
+     * @param string $serviceType The type of AI service to use (case-insensitive)
+     * @param string $apiKey The API key for authentication
+     * @throws \InvalidArgumentException If service type or API key is empty, or service not found
+     */
     public function __construct(
         private readonly string $serviceType,
         private readonly string $apiKey,
@@ -23,27 +30,21 @@ class Ai {
             throw new \InvalidArgumentException("API key cannot be empty");
         }
 
-        // Check if the provided serviceType contains any capital letters
-        if (preg_match('/[A-Z]/', $serviceType)) {
-            // Warn the user if capitals are found, as service types are case-insensitive internally
+        // Normalize service type to lowercase
+        $normalizedServiceType = strtolower($serviceType);
+        
+        // Warn if original had capital letters
+        if ($serviceType !== $normalizedServiceType) {
             trigger_error("Service type '{$serviceType}' contains capital letters and has been automatically converted to lowercase.", E_USER_WARNING);
-            // Convert the local serviceType variable to lowercase for registry lookup and internal use
-            $serviceType = strtolower($serviceType);
         }
 
         $this->loadServices();
 
-        if (!isset(self::$serviceRegistry[$serviceType])) {
-            // Try to load the service directly from the Services directory
-            $serviceClass = 'codechap\\ai\\Services\\' . ucfirst($serviceType) . 'Service';
-            if (class_exists($serviceClass)) {
-                self::registerService($serviceType, $serviceClass);
-            } else {
-                throw new \InvalidArgumentException("Service {$serviceType} not found");
-            }
+        if (!isset(self::$serviceRegistry[$normalizedServiceType])) {
+            throw new \InvalidArgumentException("Service '{$normalizedServiceType}' not found");
         }
 
-        $serviceClass = self::$serviceRegistry[$serviceType];
+        $serviceClass = self::$serviceRegistry[$normalizedServiceType];
         $this->service = new $serviceClass($apiKey);
     }
 
@@ -76,6 +77,8 @@ class Ai {
      *
      * @param string|array $prompt The prompt to send to the AI service
      * @return ServiceInterface The service instance for method chaining
+     * @throws \InvalidArgumentException If prompt is empty or invalid
+     * @throws \codechap\ai\Exceptions\ResponseException If the API request fails
      */
     public function query(string|array $prompt): ServiceInterface {
         return $this->service->query($prompt);
@@ -90,6 +93,7 @@ class Ai {
      *
      * @param string $name The property name to get
      * @return mixed The value of the property
+     * @throws \InvalidArgumentException If the property doesn't exist
      */
     public function get(string $name)
     {
@@ -102,6 +106,7 @@ class Ai {
      * @param string $name The property name to set
      * @param mixed $value The value to set
      * @return self Returns the current instance
+     * @throws \InvalidArgumentException If the property doesn't exist
      */
     public function set(string $name, $value): self
     {

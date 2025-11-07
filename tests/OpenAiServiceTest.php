@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use codechap\ai\ai;
+use codechap\ai\Ai;
 
 class OpenAiServiceTest extends TestCase {
     public function testOpenAiServiceQuery() {
@@ -12,7 +12,7 @@ class OpenAiServiceTest extends TestCase {
         }
         $openaiKey = trim(file_get_contents($openaiKeyPath));
 
-        $openai = new ai('openai', $openaiKey);
+        $openai = new Ai('openai', $openaiKey);
 
         $result = $openai
             ->set('temperature', 0)

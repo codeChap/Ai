@@ -5,6 +5,7 @@ namespace codechap\ai\Abstracts;
 use codechap\ai\Interfaces\ServiceInterface;
 use codechap\ai\Traits\AiServiceTrait;
 use codechap\ai\Traits\HeadersTrait;
+use codechap\ai\Curl;
 
 abstract class AbstractAiService implements ServiceInterface
 {
@@ -14,7 +15,7 @@ abstract class AbstractAiService implements ServiceInterface
     /**
      * HTTP Client
      */
-    protected $curl;
+    protected ?Curl $curl = null;
 
     /**
      * API Configuration
@@ -66,22 +67,10 @@ abstract class AbstractAiService implements ServiceInterface
     }
 
     /**
-     * Format prompts into messages array
-     *
-     * @param string|array $prompts
-     * @return array
-     */
-    protected function formatMessages(string|array $prompts): array
-    {
-        return is_array($prompts)
-            ? array_map(fn($prompt) => ['role' => 'user', 'content' => $prompt], $prompts)
-            : [['role' => 'user', 'content' => $prompts]];
-    }
-
-    /**
      * Get a single response from the API
      *
-     * @return string
+     * @return array|string The first response from the API
+     * @throws \RuntimeException If JSON parsing fails (when JSON mode is enabled)
      */
     public function one(): array | string
     {
@@ -92,7 +81,8 @@ abstract class AbstractAiService implements ServiceInterface
     /**
      * Get all responses from the API
      *
-     * @return array
+     * @return array Array of responses from the API
+     * @throws \RuntimeException If JSON parsing fails (when JSON mode is enabled)
      */
     public function all(): array
     {
@@ -104,8 +94,9 @@ abstract class AbstractAiService implements ServiceInterface
      * Extract first response from API response
      * Override this method in specific service implementations if needed
      *
-     * @param array $response
-     * @return string
+     * @param array $response The API response array
+     * @return string|array The extracted response content
+     * @throws \RuntimeException If JSON extraction/encoding fails
      */
     protected function extractFirstResponse(array $response): string | array
     {
@@ -116,8 +107,9 @@ abstract class AbstractAiService implements ServiceInterface
      * Extract all responses from API response
      * Override this method in specific service implementations if needed
      *
-     * @param array $response
-     * @return array
+     * @param array $response The API response array
+     * @return array Array of extracted response contents
+     * @throws \RuntimeException If JSON extraction/encoding fails
      */
     protected function extractAllResponses(array $response): array
     {
@@ -138,8 +130,10 @@ abstract class AbstractAiService implements ServiceInterface
      * Send a query to the AI service
      * This method should be implemented by each specific service
      *
-     * @param string|array $prompts
-     * @return self
+     * @param string|array $prompts The prompt(s) to send
+     * @return self Returns the current instance for method chaining
+     * @throws \InvalidArgumentException If prompts are empty or invalid
+     * @throws \codechap\ai\Exceptions\ResponseException If the API request fails
      */
     abstract public function query(string|array $prompts): self;
 }

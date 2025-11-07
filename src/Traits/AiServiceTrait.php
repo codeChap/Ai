@@ -34,11 +34,11 @@ trait AiServiceTrait
         // If prompt is an array, append all messages
         foreach ($prompt as $message) {
             if(!isset($message['role']) || !isset($message['content'])) {
-                throw new \Exception("Invalid message format: 'role' and 'content' are required.");
+                throw new \InvalidArgumentException("Invalid message format: 'role' and 'content' are required.");
             }
             $messages[] = $message;
         }
 
-        return $prompt;
+        return $messages;
     }
 }

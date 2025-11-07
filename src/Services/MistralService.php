@@ -30,8 +30,6 @@ class MistralService extends AbstractAiService
     protected ?string $randomSeed = null;
     protected ?bool $json         = false;
 
-    protected $curl;
-
     public function __construct(string $apiKey, string $url = 'https://api.mistral.ai/v1/')
     {
         parent::__construct($apiKey, $url);
@@ -54,9 +52,7 @@ class MistralService extends AbstractAiService
             'random_seed'  => $this->randomSeed,
             'tools'        => $this->tools,
             'stop'         => $this->stop
-        ], function($value) {
-            return !is_null($value);
-        });
+        ], fn($value) => !is_null($value));
 
         $headers = $this->getHeaders([
             'Authorization' => "Bearer " . trim($this->apiKey)

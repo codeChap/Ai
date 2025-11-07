@@ -28,8 +28,6 @@ class GroqService extends AbstractAiService
     protected ?string $user       = null;
     protected ?bool $json         = false;
 
-    protected $curl;
-
     public function __construct(string $apiKey, string $url = 'https://api.groq.com/openai/v1/')
     {
         parent::__construct($apiKey, $url);
@@ -50,9 +48,7 @@ class GroqService extends AbstractAiService
             'temperature'       => $this->temperature,
             'top_p'             => $this->topP,
             'user'              => $this->user
-        ], function($value) {
-            return !is_null($value);
-        });
+        ], fn($value) => !is_null($value));
 
         $headers = $this->getHeaders([
             'Authorization' => "Bearer " . trim($this->apiKey)
@@ -142,8 +138,6 @@ class GroqService extends AbstractAiService
             }
             return $results;
         }
-        return array_map(function($choice) {
-            return $choice['message']['content'] ?? '';
-        }, $response['choices'] ?? []);
+        return array_map(fn($choice) => $choice['message']['content'] ?? '', $response['choices'] ?? []);
     }
 }

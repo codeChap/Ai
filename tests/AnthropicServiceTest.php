@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use codechap\ai\ai;
+use codechap\ai\Ai;
 
 class AnthropicServiceTest extends TestCase {
     public function testAnthropicServiceQuery() {
@@ -12,7 +12,7 @@ class AnthropicServiceTest extends TestCase {
         }
         $anthropicKey = trim(file_get_contents($anthropicKeyPath));
 
-        $anthropic = new ai('anthropic', $anthropicKey);
+        $anthropic = new Ai('anthropic', $anthropicKey);
 
         $result = $anthropic
             ->set('temperature', 0)

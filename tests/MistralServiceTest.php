@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use codechap\ai\ai;
+use codechap\ai\Ai;
 
 class MistralServiceTest extends TestCase {
     public function testMistralServiceQuery() {
@@ -12,7 +12,7 @@ class MistralServiceTest extends TestCase {
         }
         $mistralKey = trim(file_get_contents($mistralKeyPath));
 
-        $mistral = new ai('mistral', $mistralKey);
+        $mistral = new Ai('mistral', $mistralKey);
 
         $result = $mistral
             ->set('temperature', 0)

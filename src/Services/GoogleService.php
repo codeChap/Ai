@@ -42,7 +42,7 @@ class GoogleService extends AbstractAiService
     protected mixed $toolConfig        = null; // Configuration for tool usage (e.g., function calling mode)
 
     // --- Internal ---
-    protected $curl; // Instance of the Curl wrapper
+    // Curl instance inherited from AbstractAiService
 
     /**
      * Constructor.
@@ -83,9 +83,7 @@ class GoogleService extends AbstractAiService
             'stopSequences'     => $this->stopSequences,
             // If JSON mode is requested, set the response MIME type
             'responseMimeType'  => $this->json ? 'application/json' : null,
-        ], function ($value) {
-            return !is_null($value);
-        });
+        ], fn($value) => !is_null($value));
 
         // --- Build Request Body ---
         $data = array_filter([
@@ -94,9 +92,7 @@ class GoogleService extends AbstractAiService
             'tools'            => $this->tools,
             'toolConfig'       => $this->toolConfig,
             // 'safetySettings' => $this->safetySettings, // Add if implementing safety settings
-        ], function ($value) {
-            return !is_null($value) && !empty($value);
-        });
+        ], fn($value) => !is_null($value) && !empty($value));
 
         // --- Prepare API Request ---
         $headers = $this->getHeaders([
