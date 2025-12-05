@@ -14,7 +14,7 @@ class XaiService extends AbstractAiService
     use HeadersTrait;
     use PropertyAccessTrait;
 
-    protected string $model            = 'grok-4';
+    protected string $model            = 'grok-4-1-fast-non-reasoning';
     protected ?bool $deferred          = null;
     protected ?float $frequencyPenalty = null;
     protected ?array $logitBias        = null;

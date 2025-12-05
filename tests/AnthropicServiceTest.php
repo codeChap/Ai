@@ -16,7 +16,7 @@ class AnthropicServiceTest extends TestCase {
 
         $result = $anthropic
             ->set('temperature', 0)
-            ->set('model', 'claude-3-5-sonnet-20241022')
+            ->set('model', 'claude-sonnet-4-5-20250929')
             ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
             ->set('stream', false)
             ->set('json', true)
@@ -27,4 +27,4 @@ class AnthropicServiceTest extends TestCase {
         $this->assertNotNull($jsonResult, "Expected valid JSON from anthropic response.");
         $this->assertIsArray($jsonResult, "Expected JSON to be an array.");
     }
-} 
+}

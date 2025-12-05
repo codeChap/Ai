@@ -8,7 +8,6 @@ A PHP library providing a unified interface for multiple AI services (OpenAI, An
 
 ## Development Commands
 
-### Testing
 ```bash
 # Run all tests
 composer test
@@ -16,13 +15,15 @@ composer test
 # Run tests with coverage report
 composer test:coverage
 
-# Run tests using shell script
-./run-tests.sh
+# Run a single test file
+./vendor/bin/phpunit tests/OpenAiServiceTest.php
+
+# Run a specific test method
+./vendor/bin/phpunit --filter testMethodName
 ```
 
 ### Manual Testing
-- `run.php` - Contains examples for testing each service
-- `judge.php` - Additional testing script
+- `run.php` - Contains examples for testing each service (requires API keys in parent directory)
 
 ## Architecture
 
@@ -40,8 +41,8 @@ User Code → Ai (factory) → Service → Curl → AI Provider API
 **Main Entry Point (`src/Ai.php`)**
 - Factory class that instantiates the appropriate service based on service type
 - Automatic service discovery: scans `src/Services/` directory for `*Service.php` files
-- Service registry pattern for extensibility
-- **Important**: Service types are case-insensitive and automatically converted to lowercase
+- Service registry pattern with static cache for extensibility
+- Service types are case-insensitive (automatically converted to lowercase with E_USER_WARNING if capitals used)
 - Acts as a proxy: `set()`, `get()`, and `query()` calls are forwarded to the underlying service
 
 **Service Base (`src/Abstracts/AbstractAiService.php`)**
@@ -49,14 +50,12 @@ User Code → Ai (factory) → Service → Curl → AI Provider API
 - Defines common API configuration properties: `apiKey`, `baseUrl`, `systemPrompt`
 - Model configuration: `model`, `temperature`, `maxTokens`, `stop`, `stream`
 - Two response methods: `one()` returns first response, `all()` returns array of all responses
-- Template methods: `query()`, `extractFirstResponse()`, `extractAllResponses()`
 
 **HTTP Layer (`src/Curl.php`)**
 - Handles all HTTP requests to AI service APIs
 - Supports both standard and streaming responses
 - Streaming: uses `CURLOPT_WRITEFUNCTION` callback to handle chunks and prints directly to output
 - Response handling: automatically decodes JSON and throws `ResponseException` on errors
-- Always sets `Content-Type: application/json` unless already present
 
 **Traits**
 - `AiServiceTrait`: Message formatting logic for converting prompts to API message arrays
@@ -73,8 +72,8 @@ Each service in `src/Services/` follows this pattern:
 5. Overrides `extractFirstResponse()`/`extractAllResponses()` if custom logic needed
 
 **Service-Specific Features:**
-- **XaiService**: Supports tool calls, citations, live search parameters, search_parameters
-- **OpenAiService**: Native JSON mode via `response_format`, reasoning_effort parameter
+- **XaiService**: Tool calls, citations, live search via `searchParameters`
+- **OpenAiService**: Native JSON mode via `response_format`, `reasoningEffort` parameter
 - **GroqService**: Vision support
 - **AnthropicService/MistralService/GoogleService**: Standard chat completions
 
@@ -83,25 +82,13 @@ Each service in `src/Services/` follows this pattern:
 Non-OpenAI services use post-processing for JSON responses:
 - Extracts outermost JSON structure from text (handles markdown code blocks)
 - Uses stack-based bracket matching algorithm
-- Handles escaped characters and string boundaries correctly
 - Services set `$this->json = true` to enable automatic extraction
-
-### Service Discovery
-
-When instantiating `new Ai('servicetype', $apiKey)`:
-1. Checks service registry cache
-2. If empty, scans `src/Services/` for files matching `*Service.php`
-3. Registers each service with lowercase name (e.g., `XaiService` → `xai`)
-4. Validates service exists, instantiates service class
-5. Returns `Ai` instance with service injected
 
 ## Adding New AI Services
 
-To add a new service:
+1. **Create**: `src/Services/YourServiceNameService.php`
 
-1. **Create the service file**: `src/Services/YourServiceNameService.php`
-
-2. **Boilerplate setup**:
+2. **Implement**:
    ```php
    <?php
    namespace codechap\ai\Services;
@@ -113,67 +100,44 @@ To add a new service:
    use codechap\ai\Curl;
    
    class YourServiceNameService extends AbstractAiService {
-       use AiServiceTrait;
-       use HeadersTrait;
-       use PropertyAccessTrait;
+       use AiServiceTrait, HeadersTrait, PropertyAccessTrait;
        
        protected string $model = 'default-model-name';
+       protected ?bool $json = false;
        // Add other service-specific properties...
-       protected $curl;
-   ```
-
-3. **Constructor**: Set the API base URL
-   ```php
-   public function __construct(string $apiKey, string $url = 'https://api.provider.com/v1/') {
-       parent::__construct($apiKey, $url);
+       
+       public function __construct(string $apiKey, string $url = 'https://api.provider.com/v1/') {
+           parent::__construct($apiKey, $url);
+       }
+       
+       public function query(string|array $prompts): self {
+           $this->validatePrompts($prompts);
+           $messages = $this->formatMessages($prompts, $this->systemPrompt);
+           
+           $data = array_filter([
+               'messages' => $messages,
+               'model' => $this->model,
+               'temperature' => $this->temperature,
+           ], fn($value) => !is_null($value));
+           
+           $headers = $this->getHeaders([
+               'Authorization' => "Bearer " . trim($this->apiKey)
+           ]);
+           
+           $this->curl = new Curl();
+           $this->curl->post($data, $headers, $this->baseUrl . 'chat/completions');
+           return $this;
+       }
+       
+       public function models($column = false): array {
+           return []; // @todo Implement
+       }
    }
    ```
 
-4. **Implement `query()` method**:
-   ```php
-   public function query(string|array $prompts): self {
-       $this->validatePrompts($prompts);
-       $messages = $this->formatMessages($prompts, $this->systemPrompt);
-       
-       // Build request data - use array_filter to remove nulls
-       $data = array_filter([
-           'messages' => $messages,
-           'model' => $this->model,
-           'temperature' => $this->temperature,
-           // ... other parameters
-       ], fn($value) => !is_null($value));
-       
-       $headers = $this->getHeaders([
-           'Authorization' => "Bearer " . trim($this->apiKey)
-       ]);
-       
-       $this->curl = new Curl();
-       $this->curl->post($data, $headers, $this->baseUrl . 'chat/completions');
-       return $this;
-   }
-   ```
-
-5. **Override response extraction if needed**: Most services can use default implementation. Override only if:
-   - API returns different response structure than `choices[0].message.content`
-   - Need to handle tool calls, citations, or other special features
-   - Need custom JSON extraction logic
-
-6. **Stub the models() method**:
-   ```php
-   public function models($column = false): array {
-       return []; // @todo Implement
-   }
-   ```
-
-7. **Auto-discovery**: Service is automatically discovered on next `new Ai('yourservicename', $key)` call
+3. **Auto-discovery**: Service is automatically available via `new Ai('yourservicename', $key)`
 
 ## Key Implementation Details
-
-**Message Format Handling:**
-- Single string prompt → converted to `[['role' => 'user', 'content' => $prompt]]`
-- Array of messages → validated for required `role` and `content` keys
-- System prompt added as first message if provided
-- **Bug in `AiServiceTrait.php:41`**: When prompt is array, it returns `$prompt` instead of `$messages`, ignoring system prompt
 
 **Property Access Pattern:**
 ```php
@@ -184,48 +148,34 @@ $ai->set('temperature', 0)
    ->one();
 ```
 
-The `set()` method uses `PropertyAccessTrait` which throws an `Exception` if property doesn't exist. All properties must be defined in the service class.
+The `set()` method throws `Exception` if property doesn't exist. All properties must be defined in the service class.
 
 **Response Extraction:**
 - Default path: `$response['choices'][0]['message']['content']`
 - XaiService handles tool_calls and citations differently
 - JSON mode (non-OpenAI): extracts and validates JSON from text response
-- GroqService has additional fallback for markdown code blocks in JSON extraction
 
 **Error Handling:**
-- `InvalidArgumentException`: Empty/invalid service type or API key (thrown in constructors)
+- `InvalidArgumentException`: Empty/invalid service type, API key, or prompts
 - `ResponseException`: HTTP errors or cURL failures (from `Curl.php`)
-- `RuntimeException`: JSON extraction/encoding failures (from services with JSON mode)
-- `Exception`: Property access errors from `PropertyAccessTrait` (generic Exception, not typed)
+- `RuntimeException`: JSON extraction/encoding failures
+- `Exception`: Property access errors from `PropertyAccessTrait`
 
-## Testing Structure
+## Common Pitfalls
 
-Tests in `tests/` directory:
-- One test file per service (e.g., `OpenAiServiceTest.php`)
-- Tests service instantiation and basic functionality
-- Uses PHPUnit with colors enabled and warning details
-- Coverage reports generated to `coverage/` directory
+1. **Service Type Case**: Always use lowercase service types to avoid E_USER_WARNING.
 
-## Common Pitfalls & Gotchas
-
-1. **Service Type Case Sensitivity**: Service types are auto-converted to lowercase with E_USER_WARNING. Always use lowercase to avoid warnings.
-
-2. **Property Setting**: Using `set()` with a non-existent property throws generic `Exception`. Check service class properties before setting.
-
-3. **JSON Mode Differences**: 
+2. **JSON Mode Differences**: 
    - OpenAI: Native support via `response_format` parameter
    - Others: Post-processing with `JsonExtractor` (may fail if AI doesn't return valid JSON)
 
-4. **System Prompt Bug**: Array-based prompts ignore system prompt due to bug at `AiServiceTrait.php:41`
+3. **Streaming Side Effect**: Streaming prints output directly to stdout during request execution.
 
-5. **Streaming Side Effect**: Streaming prints output directly to stdout during request execution, not just on retrieval.
-
-6. **Response Type Variations**: 
+4. **Response Type Variations**: 
    - Most services return `string` from `one()`
    - XaiService can return `array` for tool calls or citations
-   - Check return type when working with XaiService
 
-7. **Vision Message Format**: Vision requires nested array structure:
+5. **Vision Message Format**: Vision requires nested array structure:
    ```php
    [[
        'role' => 'user',
@@ -236,9 +186,8 @@ Tests in `tests/` directory:
    ]]
    ```
 
-## Important Notes
+## Requirements
 
-- PHP 8.2+ required (uses typed properties, array_filter with callbacks)
+- PHP 8.2+
 - Service registry is static and persists across instances
-- No streaming support implemented yet (property exists but handling incomplete)
 - `models()` method returns empty array on all services (marked as @todo)
