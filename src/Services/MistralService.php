@@ -61,16 +61,16 @@ class MistralService extends AbstractAiService
         $url = $this->baseUrl . 'chat/completions';
 
         $this->curl = new Curl();
-        $this->curl->post($data, $headers, $url);
+        $this->curl->post($headers, $url, $data);
         return $this;
     }
 
     /**
      * Get a list of available models.
-     * @param string $column The $column name to retrieve
+     * @param string|null $column The $column name to retrieve
      * @return array
      */
-    public function models($column = false) : array
+    public function models(?string $column = null) : array
     {
         $headers = $this->getHeaders([
             'Authorization' => "Bearer " . trim($this->apiKey)
@@ -79,7 +79,7 @@ class MistralService extends AbstractAiService
         $url = $this->baseUrl . 'models';
 
         $this->curl = new Curl();
-        $this->curl->post([], $headers, $url);
+        $this->curl->get($headers, $url);
         $response = $this->curl->getResponse();
 
         if(!empty($response['data'])) {

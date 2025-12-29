@@ -58,8 +58,8 @@ interface ServiceInterface
     /**
      * Gets the models available for the AI service.
      *
-     * @param string $column The column to sort by.
+     * @param string|null $column The column to sort by.
      * @return array Array of models available for the AI service
      */
-    public function models($column = false): array;
+    public function models(?string $column = null): array;
 }

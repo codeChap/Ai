@@ -20,12 +20,12 @@ trait HeadersTrait
     /**
      * Get headers specifically for streaming responses
      *
-     * @param string $apiKey The API key for authentication
+     * @param array $headers Additional headers
      * @return array
      */
-    protected function getStreamHeaders(string $apiKey): array
+    protected function getStreamHeaders(array $headers = []): array
     {
-        return array_merge($this->getHeaders($apiKey), [
+        return array_merge($this->getHeaders($headers), [
             'Accept'        => 'text/event-stream',
             'Cache-Control' => 'no-cache',
             'Connection'    => 'keep-alive',

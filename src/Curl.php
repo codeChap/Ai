@@ -16,25 +16,45 @@ class Curl {
     /**
      * Execute a POST request to the specified URL
      *
-     * @param array $data The data to send in the request body
      * @param array $headers The HTTP headers to include
      * @param string $url The URL to send the request to
+     * @param array $data The data to send in the request body
      * @return self Returns the current instance for method chaining
      * @throws \RuntimeException If cURL initialization or JSON encoding fails
      * @throws \codechap\ai\Exceptions\ResponseException If the HTTP request fails
      */
-    public function post(array $data = [], array $headers, string $url): self {
+    public function post(array $headers, string $url, array $data = []): self {
         $this->initializeCurl();
         $this->content = [];
 
         $isStreaming = $data['stream'] ?? false;
         $headers = $this->prepareHeaders($headers);
 
-        $this->setCurlOptions($url, $isStreaming, $headers, $this->prepareData($data));
+        $this->setCurlOptions('POST', $url, $isStreaming, $headers, $this->prepareData($data));
 
         return $isStreaming ?
             $this->handleStreamingResponse() :
             $this->handleStandardResponse();
+    }
+
+    /**
+     * Execute a GET request to the specified URL
+     *
+     * @param array $headers The HTTP headers to include
+     * @param string $url The URL to send the request to
+     * @return self Returns the current instance for method chaining
+     * @throws \RuntimeException If cURL initialization fails
+     * @throws \codechap\ai\Exceptions\ResponseException If the HTTP request fails
+     */
+    public function get(array $headers, string $url): self {
+        $this->initializeCurl();
+        $this->content = [];
+
+        $headers = $this->prepareHeaders($headers);
+
+        $this->setCurlOptions('GET', $url, false, $headers);
+
+        return $this->handleStandardResponse();
     }
 
     private function initializeCurl(): void {
@@ -78,19 +98,29 @@ class Curl {
     /**
      * Set cURL options for request
      *
-     * @param $url
-     * @param $isStreaming
-     * @param $headers
-     * @param $jsonData
+     * @param string $method
+     * @param string $url
+     * @param bool $isStreaming
+     * @param array $headers
+     * @param string|false $jsonData
      */
-    private function setCurlOptions(string $url, bool $isStreaming, array $headers, string $jsonData): void {
-        curl_setopt_array($this->curl, array_filter([
+    private function setCurlOptions(string $method, string $url, bool $isStreaming, array $headers, string|false $jsonData = false): void {
+        $options = [
             CURLOPT_URL            => $url,
             CURLOPT_RETURNTRANSFER => !$isStreaming,
-            CURLOPT_POST           => $jsonData ? true : false,
             CURLOPT_HTTPHEADER     => $this->formatHeaders($headers),
-            CURLOPT_POSTFIELDS     => $jsonData ? $jsonData : null
-        ]));
+        ];
+
+        if ($method === 'POST') {
+            $options[CURLOPT_POST] = true;
+            if ($jsonData !== false) {
+                $options[CURLOPT_POSTFIELDS] = $jsonData;
+            }
+        } elseif ($method === 'GET') {
+            $options[CURLOPT_HTTPGET] = true;
+        }
+
+        curl_setopt_array($this->curl, $options);
 
         if ($isStreaming) {
             curl_setopt($this->curl, CURLOPT_WRITEFUNCTION, [$this, 'handleStreamingData']);
@@ -107,15 +137,11 @@ class Curl {
     private function handleStreamingData($curl, string $data): int {
         $cleanData = str_replace('data: ', '', $data);
         if (trim($cleanData)) {
-            try {
-                $jsonData = json_decode($cleanData, true);
-                if ($jsonData && isset($jsonData['choices'][0]['delta']['content'])) {
-                    $content = $jsonData['choices'][0]['delta']['content'];
-                    $this->content[] = $content;
-                    print $content;
-                }
-            } catch (\Exception $e) {
-                // Skip malformed JSON data
+            $jsonData = json_decode($cleanData, true);
+            if ($jsonData && isset($jsonData['choices'][0]['delta']['content'])) {
+                $content = $jsonData['choices'][0]['delta']['content'];
+                $this->content[] = $content;
+                print $content;
             }
         }
         return strlen($data);
@@ -150,9 +176,9 @@ class Curl {
     /**
      * Execute cURL request and handle response
      *
-     * @return self
+     * @return string
      */
-    private function executeRequest(): ?string {
+    private function executeRequest(): string {
         $response = curl_exec($this->curl);
         $httpCode = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
 
@@ -165,11 +191,14 @@ class Curl {
         curl_close($this->curl);
 
         if ($httpCode !== 200) {
+            // response is string because successful curl_exec with RETURN_TRANSFER is string
             throw new ResponseException(
-                "HTTP error: $httpCode" . ($response ? ", Response: $response" : '')
+                "HTTP error: $httpCode" . (is_string($response) ? ", Response: $response" : '')
             );
         }
 
+        // $response is definitely string here
+        /** @var string $response */
         return $response;
     }
 

@@ -57,7 +57,7 @@ class GroqService extends AbstractAiService
         $url = $this->baseUrl . 'chat/completions';
 
         $this->curl = new Curl();
-        $this->curl->post($data, $headers, $url);
+        $this->curl->post($headers, $url, $data);
 
         return $this;
     }
@@ -66,10 +66,10 @@ class GroqService extends AbstractAiService
      * Get a list of models.
      *
      * @todo Implement this method.
-     * @param string $column The column to sort by.
+     * @param string|null $column The column to sort by.
      * @return array
      */
-    public function models($column = false) : array
+    public function models(?string $column = null) : array
     {
         return [];
     }

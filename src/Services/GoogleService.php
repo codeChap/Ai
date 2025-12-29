@@ -105,7 +105,7 @@ class GoogleService extends AbstractAiService
 
         // --- Execute Request ---
         $this->curl = new Curl();
-        $this->curl->post($data, $headers, $url);
+        $this->curl->post($headers, $url, $data);
 
         return $this; // Allow method chaining
     }
@@ -166,10 +166,10 @@ class GoogleService extends AbstractAiService
     /**
      * Get a list of available models from the Google AI API.
      *
-     * @param string $column Optional: If needed to extract a specific column (currently unused).
+     * @param string|null $column Optional: If needed to extract a specific column (currently unused).
      * @return array List of models or empty array on failure/not implemented fully.
      */
-    public function models($column = false): array
+    public function models(?string $column = null): array
     {
         // Google API endpoint for listing models
         $url = 'https://generativelanguage.googleapis.com/v1beta/models?key=' . trim($this->apiKey);
@@ -177,7 +177,7 @@ class GoogleService extends AbstractAiService
 
         try {
             $curl = new Curl();
-            $curl->get([], $headers, $url); // Perform GET request
+            $curl->get($headers, $url); // Perform GET request
             $response = $curl->getResponse();
 
             if (isset($response['models']) && is_array($response['models'])) {
@@ -293,9 +293,7 @@ class GoogleService extends AbstractAiService
                  // If direct JSON MIME type was used, the $text itself should be the JSON string
                  try {
                     // Attempt to decode the raw text as JSON first if MIME type was set
-                    if(($generationConfig['responseMimeType'] ?? null) === 'application/json'){
-                        return json_decode($text, true, 512, JSON_THROW_ON_ERROR);
-                    }
+                    return json_decode($text, true, 512, JSON_THROW_ON_ERROR);
                  } catch (JsonException $e) {
                     // Fall through to throwing error if parsing fails
                  }
@@ -370,10 +368,8 @@ class GoogleService extends AbstractAiService
                         if ($extracted === null) {
                               // Attempt direct decode if MIME type was likely set
                               try {
-                                  if (($generationConfig['responseMimeType'] ?? null) === 'application/json'){
-                                      $results[] = json_decode($text, true, 512, JSON_THROW_ON_ERROR);
-                                      continue; // Move to next candidate
-                                  }
+                                  $results[] = json_decode($text, true, 512, JSON_THROW_ON_ERROR);
+                                  continue; // Move to next candidate
                               } catch (JsonException $e) { /* Fall through */ }
                              throw new RuntimeException('Candidate ' . $index . ' response does not contain valid JSON.');
                         }

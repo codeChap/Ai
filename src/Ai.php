@@ -19,8 +19,8 @@ class Ai {
      * @throws \InvalidArgumentException If service type or API key is empty, or service not found
      */
     public function __construct(
-        private readonly string $serviceType,
-        private readonly string $apiKey,
+        string $serviceType,
+        string $apiKey,
     ) {
         if (empty(trim($serviceType))) {
             throw new \InvalidArgumentException("Service name cannot be empty");

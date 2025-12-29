@@ -8,7 +8,7 @@ class JsonExtractor
      * Attempts to extract and decode the outermost JSON structure found in the input string.
      *
      * @param string $string
-     * @return mixed|null The decoded JSON structure, or null if extraction/decoding fails.
+     * @return array|null The decoded JSON structure, or null if extraction/decoding fails.
      */
     public static function extract(string $string) : ?array
     {
