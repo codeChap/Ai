@@ -113,4 +113,18 @@ class Ai {
         $this->service->set($name, $value);
         return $this;
     }
+
+    /**
+     * Set the HTTP Client instance (useful for mocking)
+     *
+     * @param \codechap\ai\Interfaces\CurlInterface $curl
+     * @return self
+     */
+    public function setCurl(\codechap\ai\Interfaces\CurlInterface $curl): self
+    {
+        if (method_exists($this->service, 'setCurl')) {
+            $this->service->setCurl($curl);
+        }
+        return $this;
+    }
 }

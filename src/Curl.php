@@ -4,8 +4,9 @@ namespace codechap\ai;
 
 use codechap\ai\Traits\HeadersTrait;
 use codechap\ai\Exceptions\ResponseException;
+use codechap\ai\Interfaces\CurlInterface;
 
-class Curl {
+class Curl implements CurlInterface {
 
     use HeadersTrait;
 

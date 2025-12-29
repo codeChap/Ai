@@ -2,17 +2,31 @@
 
 use PHPUnit\Framework\TestCase;
 use codechap\ai\Ai;
+use codechap\ai\Interfaces\CurlInterface;
 
 class OpenAiServiceTest extends TestCase {
     public function testOpenAiServiceQuery() {
-        // Load the OpenAI API key from file. Adjust the path if necessary.
-        $openaiKeyPath = realpath(__DIR__ . '/../../../') . '/OPENAI-API-KEY.txt';
-        if (!file_exists($openaiKeyPath)) {
-            $this->markTestSkipped("OPENAI-API-KEY not provided.");
-        }
-        $openaiKey = trim(file_get_contents($openaiKeyPath));
+        // Mock Response
+        $mockResponse = [
+            'choices' => [
+                [
+                    'message' => [
+                        'content' => json_encode(['capital' => 'Pretoria', 'city2' => 'Cape Town', 'city3' => 'Bloemfontein'])
+                    ]
+                ]
+            ]
+        ];
 
-        $openai = new Ai('openai', $openaiKey);
+        // Create Mock Curl
+        $mockCurl = $this->createMock(CurlInterface::class);
+        $mockCurl->method('post')->willReturnSelf();
+        $mockCurl->method('getResponse')->willReturn($mockResponse);
+
+        // Instantiate AI with dummy key
+        $openai = new Ai('openai', 'dummy-key');
+        
+        // Inject Mock
+        $openai->setCurl($mockCurl);
 
         $result = $openai
             ->set('temperature', 0)
@@ -26,5 +40,6 @@ class OpenAiServiceTest extends TestCase {
         $jsonResult = json_decode($result, true);
         $this->assertNotNull($jsonResult, "Expected valid JSON from openai response.");
         $this->assertIsArray($jsonResult, "Expected JSON to be an array.");
+        $this->assertArrayHasKey('capital', $jsonResult);
     }
-} 
+}

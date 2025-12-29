@@ -129,7 +129,9 @@ class AnthropicService extends AbstractAiService
     private function sendRequest(array $data, array $headers): void
     {
         $url = $this->baseUrl . self::CHAT_ENDPOINT;
-        $this->curl = new Curl();
+        if ($this->curl === null) {
+            $this->curl = new Curl();
+        }
         $this->curl->post($headers, $url, $data);
     }
 

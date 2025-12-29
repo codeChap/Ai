@@ -104,7 +104,9 @@ class GoogleService extends AbstractAiService
         $url = rtrim($this->baseUrl, '/') . '/' . $this->model . ':generateContent?key=' . trim($this->apiKey);
 
         // --- Execute Request ---
-        $this->curl = new Curl();
+        if ($this->curl === null) {
+            $this->curl = new Curl();
+        }
         $this->curl->post($headers, $url, $data);
 
         return $this; // Allow method chaining
@@ -176,9 +178,11 @@ class GoogleService extends AbstractAiService
         $headers = $this->getHeaders(); // Get default headers (might not need specific ones for GET)
 
         try {
-            $curl = new Curl();
-            $curl->get($headers, $url); // Perform GET request
-            $response = $curl->getResponse();
+            if ($this->curl === null) {
+                $this->curl = new Curl();
+            }
+            $this->curl->get($headers, $url); // Perform GET request
+            $response = $this->curl->getResponse();
 
             if (isset($response['models']) && is_array($response['models'])) {
                 // Optionally process the list, e.g., extract names

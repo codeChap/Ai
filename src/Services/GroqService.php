@@ -56,7 +56,9 @@ class GroqService extends AbstractAiService
 
         $url = $this->baseUrl . 'chat/completions';
 
-        $this->curl = new Curl();
+        if ($this->curl === null) {
+            $this->curl = new Curl();
+        }
         $this->curl->post($headers, $url, $data);
 
         return $this;

@@ -2,17 +2,31 @@
 
 use PHPUnit\Framework\TestCase;
 use codechap\ai\Ai;
+use codechap\ai\Interfaces\CurlInterface;
 
 class GroqServiceTest extends TestCase {
     public function testGroqServiceQuery() {
-        // Load the Groq API key from file. Adjust the path if necessary.
-        $groqKeyPath = realpath(__DIR__ . '/../../../') . '/GROQ-API-KEY.txt';
-        if (!file_exists($groqKeyPath)) {
-            $this->markTestSkipped("GROQ-API-KEY not provided.");
-        }
-        $groqKey = trim(file_get_contents($groqKeyPath));
+        // Mock Response
+        $mockResponse = [
+            'choices' => [
+                [
+                    'message' => [
+                        'content' => json_encode(['capital' => 'Pretoria', 'city2' => 'Cape Town', 'city3' => 'Bloemfontein'])
+                    ]
+                ]
+            ]
+        ];
 
-        $groq = new Ai('groq', $groqKey);
+        // Create Mock Curl
+        $mockCurl = $this->createMock(CurlInterface::class);
+        $mockCurl->method('post')->willReturnSelf();
+        $mockCurl->method('getResponse')->willReturn($mockResponse);
+
+        // Instantiate AI with dummy key
+        $groq = new Ai('groq', 'dummy-key');
+        
+        // Inject Mock
+        $groq->setCurl($mockCurl);
 
         $result = $groq
             ->set('temperature', 0)
@@ -26,5 +40,6 @@ class GroqServiceTest extends TestCase {
         $jsonResult = json_decode($result[0], true);
         $this->assertNotNull($jsonResult, "Expected valid JSON from groq response.");
         $this->assertIsArray($jsonResult, "Expected JSON to be an array.");
+        $this->assertArrayHasKey('capital', $jsonResult);
     }
-} 
+}

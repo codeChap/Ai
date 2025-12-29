@@ -3,6 +3,7 @@
 namespace codechap\ai\Abstracts;
 
 use codechap\ai\Interfaces\ServiceInterface;
+use codechap\ai\Interfaces\CurlInterface;
 use codechap\ai\Traits\AiServiceTrait;
 use codechap\ai\Traits\HeadersTrait;
 use codechap\ai\Curl;
@@ -15,7 +16,7 @@ abstract class AbstractAiService implements ServiceInterface
     /**
      * HTTP Client
      */
-    protected ?Curl $curl = null;
+    protected ?CurlInterface $curl = null;
 
     /**
      * API Configuration
@@ -51,6 +52,18 @@ abstract class AbstractAiService implements ServiceInterface
     }
 
     /**
+     * Set the HTTP Client instance (useful for mocking)
+     *
+     * @param CurlInterface $curl
+     * @return self
+     */
+    public function setCurl(CurlInterface $curl): self
+    {
+        $this->curl = $curl;
+        return $this;
+    }
+
+    /**
      * Validate the input prompts
      *
      * @param string|array $prompts
@@ -74,6 +87,9 @@ abstract class AbstractAiService implements ServiceInterface
      */
     public function one(): array | string
     {
+        if ($this->curl === null) {
+            throw new \RuntimeException("Curl client has not been initialized. Call query() first.");
+        }
         $response = $this->curl->getResponse();
         return $this->extractFirstResponse($response);
     }
@@ -86,6 +102,9 @@ abstract class AbstractAiService implements ServiceInterface
      */
     public function all(): array
     {
+        if ($this->curl === null) {
+            throw new \RuntimeException("Curl client has not been initialized. Call query() first.");
+        }
         $response = $this->curl->getResponse();
         return $this->extractAllResponses($response);
     }

@@ -2,17 +2,31 @@
 
 use PHPUnit\Framework\TestCase;
 use codechap\ai\Ai;
+use codechap\ai\Interfaces\CurlInterface;
 
 class xAiServiceTest extends TestCase {
     public function testxAiServiceQuery() {
-        // Load the xAI API key from file. Adjust the path if necessary.
-        $xaiKeyPath = realpath(__DIR__ . '/../../../') . '/XAI-API-KEY.txt';
-        if (!file_exists($xaiKeyPath)) {
-            $this->markTestSkipped("XAI-API-KEY.txt not provided.");
-        }
-        $xaiKey = trim(file_get_contents($xaiKeyPath));
+        // Mock Response
+        $mockResponse = [
+            'choices' => [
+                [
+                    'message' => [
+                        'content' => json_encode(['capital' => 'Pretoria', 'city2' => 'Cape Town', 'city3' => 'Bloemfontein'])
+                    ]
+                ]
+            ]
+        ];
 
-        $xai = new Ai('xai', $xaiKey);
+        // Create Mock Curl
+        $mockCurl = $this->createMock(CurlInterface::class);
+        $mockCurl->method('post')->willReturnSelf();
+        $mockCurl->method('getResponse')->willReturn($mockResponse);
+
+        // Instantiate AI with dummy key
+        $xai = new Ai('xai', 'dummy-key');
+        
+        // Inject Mock
+        $xai->setCurl($mockCurl);
 
         $result = $xai
             ->set('temperature', 0)
@@ -26,5 +40,6 @@ class xAiServiceTest extends TestCase {
         $jsonResult = json_decode($result[0], true);
         $this->assertNotNull($jsonResult, "Expected valid JSON from xai response.");
         $this->assertIsArray($jsonResult, "Expected JSON to be an array.");
+        $this->assertArrayHasKey('capital', $jsonResult);
     }
 }
