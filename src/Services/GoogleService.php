@@ -26,7 +26,7 @@ class GoogleService extends AbstractAiService
 
     // --- Model & Generation Parameters ---
     protected string $systemPrompt     = 'You are a helpful assistant.'; // Default system prompt (handled within message formatting)
-    protected string $model            = 'gemini-2.5-pro-preview-03-25'; // Default model to use
+    protected string $model            = 'gemini-1.5-pro'; // Default model to use
     protected ?float $temperature      = null; // Controls randomness (0.0-1.0)
     protected ?float $topP             = null; // Nucleus sampling threshold
     protected ?int $topK               = null; // Top-k sampling parameter
