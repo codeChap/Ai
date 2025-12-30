@@ -100,57 +100,57 @@ print_r($result);
 print "\n\n";
 
 // Google Test
-print "### Google Test ### \n";
-$google = new Ai('google', $googleKey);
-$result = $google
-    ->set('temperature', 0)
-    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
-    ->set('stream', false)
-    ->set('json', true)
-    ->query("What is the capital of South Africa? Only return the three in a JSON response.")
-    ->all()
-    ;
-print_r(json_decode($result[0], true));
-print "\n\n";
+//print "### Google Test ### \n";
+//$google = new Ai('google', $googleKey);
+//$result = $google
+//    ->set('temperature', 0)
+//    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+//    ->set('stream', false)
+//    ->set('json', true)
+//    ->query("What is the capital of South Africa? Only return the three in a JSON response.")
+//    ->all()
+//    ;
+//print_r(json_decode($result[0], true));
+//print "\n\n";
 
 // Groq Test
-print "### Groq Test ### \n";
-$groq = new Ai('groq', $groqKey);
-$result = $groq
-    ->set('temperature', 0)
-    ->set('model', 'llama-3.2-90b-vision-preview')
-    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
-    ->set('stream', false)
-    ->set('json', false)
-    ->query(
-    [
-        [
-            'role' => 'user',
-            'content' => [
-                [
-                    'type' => 'image_url',
-                    'image_url' => [
-                        'url' => 'https://upload.wikimedia.org/wikipedia/commons/f/f2/LPU-v1-die.jpg'
-                    ]
-                ],
-                [
-                    'type' => 'text',
-                    'text' => 'What is this image about?'
-                ]
-            ]
-        ]
-    ])
-    ->all()
-    ;
-print_r($result);
-print "\n\n";
+//print "### Groq Test ### \n";
+//$groq = new Ai('groq', $groqKey);
+//$result = $groq
+//    ->set('temperature', 0)
+//    ->set('model', 'llama-3.2-90b-vision-preview')
+//    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+//    ->set('stream', false)
+//    ->set('json', false)
+//    ->query(
+//    [
+//        [
+//            'role' => 'user',
+//            'content' => [
+//                [
+//                    'type' => 'image_url',
+//                    'image_url' => [
+//                        'url' => 'https://upload.wikimedia.org/wikipedia/commons/f/f2/LPU-v1-die.jpg'
+//                    ]
+//                ],
+//                [
+//                    'type' => 'text',
+//                    'text' => 'What is this image about?'
+//                ]
+//            ]
+//        ]
+//    ])
+//    ->all()
+//    ;
+//print_r($result);
+//print "\n\n";
 
 // Anthropic Test
 print "### Anthropic Test ### \n";
 $anthropic = new Ai('anthropic', $anthropicKey);
 $result = $anthropic
     ->set('temperature', 0)
-    ->set('model', 'claude-3-5-sonnet-20241022')
+    //->set('model', 'claude-haiku-4-5-20251001')
     ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
     ->set('stream', false)
     ->set('json', true)

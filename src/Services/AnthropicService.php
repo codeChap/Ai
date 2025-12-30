@@ -26,7 +26,7 @@ class AnthropicService extends AbstractAiService
     /**
      * Model Configuration
      */
-    protected string $model = 'claude-sonnet-4-5-20250929';
+    protected string $model = 'claude-haiku-4-5-20251001';
     protected ?float $temperature = null;
     protected ?int $maxTokens = 1024;
     protected ?array $stop = null;
