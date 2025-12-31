@@ -54,6 +54,40 @@ $toolsDefinition = [
     ]
 ];
 
+// Groq Test
+print "### Groq Test ### \n";
+$groq = new Ai('groq', $groqKey);
+$result = $groq
+   ->set('temperature', 0)
+   ->set('model', 'meta-llama/llama-4-scout-17b-16e-instruct')
+   ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
+   ->set('stream', false)
+   ->set('json', false)
+   ->query(
+   [
+       [
+           'role' => 'user',
+           'content' => [
+               [
+                   'type' => 'image_url',
+                   'image_url' => [
+                       'url' => 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400'
+                   ]
+               ],
+               [
+                   'type' => 'text',
+                   'text' => 'What is this image about?'
+               ]
+           ]
+       ]
+   ])
+   ->all()
+   ;
+print_r($result);
+print "\n\n";
+
+die('Stop here for now.');
+
 // xAI Search Test
 print "### xAI Search Test ### \n";
 $xai = new Ai('xai', $xaiKey);
@@ -113,37 +147,7 @@ print "\n\n";
 //print_r(json_decode($result[0], true));
 //print "\n\n";
 
-// Groq Test
-//print "### Groq Test ### \n";
-//$groq = new Ai('groq', $groqKey);
-//$result = $groq
-//    ->set('temperature', 0)
-//    ->set('model', 'llama-3.2-90b-vision-preview')
-//    ->set('systemPrompt', 'You are a helpful assistant from planet earth.')
-//    ->set('stream', false)
-//    ->set('json', false)
-//    ->query(
-//    [
-//        [
-//            'role' => 'user',
-//            'content' => [
-//                [
-//                    'type' => 'image_url',
-//                    'image_url' => [
-//                        'url' => 'https://upload.wikimedia.org/wikipedia/commons/f/f2/LPU-v1-die.jpg'
-//                    ]
-//                ],
-//                [
-//                    'type' => 'text',
-//                    'text' => 'What is this image about?'
-//                ]
-//            ]
-//        ]
-//    ])
-//    ->all()
-//    ;
-//print_r($result);
-//print "\n\n";
+
 
 // Anthropic Test
 print "### Anthropic Test ### \n";

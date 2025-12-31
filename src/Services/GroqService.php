@@ -19,7 +19,7 @@ class GroqService extends AbstractAiService
 
     protected string $systemPrompt = 'You are a helpful assistant.';
 
-    protected string $model       = 'meta-llama/llama-4-scout-17b-16e-instruct';
+    protected string $model = 'meta-llama/llama-4-scout-17b-16e-instruct';
     protected ?int $maxTokens     = null;
     protected ?array $stop        = null;
     protected ?bool $stream       = false;
