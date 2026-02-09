@@ -176,6 +176,24 @@ $ai->anthropic() // or mistral(), groq(), xai()
    ->one();
 ```
 
+## Scope
+
+This library is focused on **text-based chat completions** across multiple AI providers.
+
+| Feature          | Status |
+|------------------|--------|
+| Chat completions | ✓      |
+| Streaming        | Planned|
+| Tool use         | Planned|
+| Vision           | ✓      |
+| JSON mode        | ✓      |
+| Live search      | ✓      |
+| Caching          | Planned|
+| PDF input        | Planned|
+| Image generation | ✕      |
+
+Image generation is intentionally out of scope and will not be added here. It is better suited as a separate project (e.g., an MCP server) due to its fundamentally different request/response patterns.
+
 ## Contributing
 
  - Todo
